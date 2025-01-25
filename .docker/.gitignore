@@ -1,0 +1,4 @@
+e-store-cart/var/log/**/*
+!e-store-cart/var/log/.gitkeep
+e-store-cart/etc/nginx/nginx.conf
+e-store-cart/etc/php/www.conf

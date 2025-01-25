@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  e-store-cart:
+    image: php:8.4.3-fpm
+    container_name: c-e-store-cart-server
+    build:
+      context: .
+      dockerfile: .docker/e-store-cart/dev.dockerfile
+    ports:
+      - "8410:8410"
+      - "443:443"
+    volumes:
+      - ./e-store-cart/:/var/www/app
+#      - ./.docker/e-store-cart/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+#      - ./.docker/e-store-cart/var/log:/var/log/nginx
+#      - ./.docker/e-store-cart/etc/php/www.conf:/etc/php/8.4.3/fpm/pool.d/www.conf
+    restart: unless-stopped
+  cart-database:
+    image: mysql:8.0
+    container_name: c-cart-database
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: zYzy3wPgQApuppOb
+      MYSQL_DATABASE: cart
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 5BD5S1tuikRhGo
+    volumes:
+      - ./cart-database/data:/var/lib/mysql
