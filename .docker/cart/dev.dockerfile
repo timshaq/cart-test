@@ -25,7 +25,7 @@ WORKDIR /var/www/app
 FROM nginx:1.26 AS nginx-base
 
 # Копируем конфигурацию Nginx
-COPY ./.docker/e-store-cart/etc/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./.docker/cart/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Устанавливаем рабочую директорию
 WORKDIR /var/www/app
@@ -34,7 +34,7 @@ WORKDIR /var/www/app
 FROM php-base AS app
 
 # Копируем содержимое проекта
-COPY ./e-store-cart /var/www/app
+COPY ./cart /var/www/app
 
 # Копируем Nginx в финальный образ
 COPY --from=nginx-base /etc/nginx /etc/nginx
