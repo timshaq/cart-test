@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\MeasurementRepository;
+use App\Repository\ProductMeasurementRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MeasurementRepository::class)]
-class Measurement
+#[ORM\Entity(repositoryClass: ProductMeasurementRepository::class)]
+class ProductMeasurement
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
