@@ -8,9 +8,42 @@ framework:
             # async: '%env(MESSENGER_TRANSPORT_DSN)%'
             # failed: 'doctrine://default?queue_name=failed'
             # sync: 'sync://'
+            producer:
+                dsn: '%env(KAFKA_URL)%'
+                serializer: App\MessageSerializer\ProductSerializer
+                options:
+                    flushTimeout: 10000
+                    flushRetries: 5
+                    topic:
+                        name: 'events'
+                    kafka_conf:
+                        security.protocol: 'plaintext' #'sasl_ssl'
+#                        ssl.ca.location: '%kernel.project_dir%/config/kafka/ca.pem'
+#                        sasl.username: '%env(KAFKA_SASL_USERNAME)%'
+#                        sasl.password: '%env(KAFKA_SASL_PASSWORD)%'
+#                        sasl.mechanisms: 'SCRAM-SHA-256'
+            product_consumer:
+                dsn: '%env(KAFKA_URL)%'
+                serializer: App\MessageSerializer\ProductSerializer
+                options:
+                    commitAsync: true
+                    receiveTimeout: 10000
+                    topic:
+                        name: "products"
+                    kafka_conf:
+                        enable.auto.offset.store: 'false'
+                        group.id: 'group-products' # should be unique per consumer
+                        security.protocol: 'plaintext' #'sasl_ssl'
+#                        ssl.ca.location: '%kernel.project_dir%/config/kafka/ca.pem'
+#                        sasl.username: '%env(KAFKA_SASL_USERNAME)%'
+#                        sasl.password: '%env(KAFKA_SASL_PASSWORD)%'
+#                        sasl.mechanisms: 'SCRAM-SHA-256'
+                        max.poll.interval.ms: '45000'
+                    topic_conf:
+                        auto.offset.reset: 'earliest'
 
         routing:
-            # Route your messages to the transports
+            App\Message\Product: product_consumer            # Route your messages to the transports
             # 'App\Message\YourMessage': async
 
 # when@test:
