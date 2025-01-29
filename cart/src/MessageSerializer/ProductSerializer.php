@@ -5,18 +5,23 @@ namespace App\MessageSerializer;
 use App\Message\Product;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
+use Symfony\Component\Serializer\Serializer;
 
 final class ProductSerializer implements SerializerInterface
 {
+    public function __construct(private Serializer $serializer)
+    {
+    }
     public function decode(array $encodedEnvelope): Envelope
     {
         // todo: handle Throwable
-        $record = json_decode($encodedEnvelope['body'], true);
-        return new Envelope(Product::fromArray($record));
+        $product = $this->serializer->deserialize($encodedEnvelope['body'], Product::class, 'json');
+        return new Envelope($product);
     }
 
     public function encode(Envelope $envelope): array
     {
+        // todo: write...
         return [];
 //        $event = $envelope->getMessage();
 //

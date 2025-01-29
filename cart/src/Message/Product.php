@@ -2,6 +2,8 @@
 
 namespace App\Message;
 
+use Symfony\Component\Serializer\Attribute\SerializedName;
+
 final class Product
 {
      public function __construct(
@@ -10,20 +12,10 @@ final class Product
          public int $cost,
          public int $tax,
          public int $version,
-         public array $measurements,
+         #[SerializedName('measurments')]
+         public ProductMeasurement $measurements,
          public ?string $description = null,
-     ) {
-     }
-     public static function fromArray(array $array): self
+     )
      {
-         return new self(
-             $array['id'],
-             $array['name'],
-             $array['cost'],
-             $array['tax'],
-             $array['version'],
-             $array['measurments'],
-             $array['description'],
-         );
      }
 }
