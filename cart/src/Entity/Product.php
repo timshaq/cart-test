@@ -28,6 +28,13 @@ class Product
     #[ORM\Column]
     private ?int $version = null;
 
+    #[ORM\Column]
+    private ?int $measurementId = null;
+
+    #[ORM\OneToOne(targetEntity: ProductMeasurement::class)]
+    #[ORM\JoinColumn(name: 'measurement_id', referencedColumnName: 'id')]
+    private ProductMeasurement $measurement;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -98,5 +105,15 @@ class Product
         $this->version = $version;
 
         return $this;
+    }
+
+    public function getMeasurement(): ProductMeasurement
+    {
+        return $this->measurement;
+    }
+
+    public function setMeasurement(ProductMeasurement $measurement): void
+    {
+        $this->measurement = $measurement;
     }
 }

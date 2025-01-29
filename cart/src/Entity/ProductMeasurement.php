@@ -23,7 +23,10 @@ class ProductMeasurement
     private ?int $width = null;
 
     #[ORM\Column]
-    private ?int $lenght = null;
+    private ?int $length = null;
+
+    #[ORM\OneToOne(targetEntity: Product::class, mappedBy: 'measurement')]
+    private Product $measurement;
 
     public function getId(): ?int
     {
@@ -66,14 +69,14 @@ class ProductMeasurement
         return $this;
     }
 
-    public function getLenght(): ?int
+    public function getLength(): ?int
     {
-        return $this->lenght;
+        return $this->length;
     }
 
-    public function setLenght(int $lenght): static
+    public function setLength(int $length): static
     {
-        $this->lenght = $lenght;
+        $this->length = $length;
 
         return $this;
     }
