@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Entity\ProductMeasurement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Message\Product as MessageProduct;
 
 /**
  * @extends ServiceEntityRepository<Product>
@@ -16,28 +18,37 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    //    /**
-    //     * @return Product[] Returns an array of Product objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function createOrUpdateByMessage(MessageProduct $messageProduct): void
+    {
+        $this->getEntityManager()->beginTransaction();
 
-    //    public function findOneBySomeField($value): ?Product
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        try {
+            $product = $this->find($messageProduct->getId());
+            // todo: why consumer become producer if next line ($product)
+            if (!$product) {
+                $product = new Product();
+                $product->setMeasurement(new ProductMeasurement());
+            }
+            $product->setName($messageProduct->getName());
+            $product->setDescription($messageProduct->getDescription());
+            $product->setCost($messageProduct->getCost());
+            $product->setTax($messageProduct->getTax());
+            $product->setVersion($messageProduct->getVersion());
+
+            // todo: split the logic
+            $product->getMeasurement()->setHeight($messageProduct->getMeasurements()->getHeight());
+            $product->getMeasurement()->setLength($messageProduct->getMeasurements()->getLength());
+            $product->getMeasurement()->setWeight($messageProduct->getMeasurements()->getWeight());
+            $product->getMeasurement()->setWidth($messageProduct->getMeasurements()->getWidth());
+
+            $this->getEntityManager()->persist($product);
+            $this->getEntityManager()->persist($product->getMeasurement());
+            $this->getEntityManager()->flush();
+        } catch (\Throwable $e) {
+            $this->getEntityManager()->rollback();
+            throw new \RuntimeException($e->getMessage(), $e->getCode(), $e->getPrevious());
+        }
+
+        $this->getEntityManager()->commit();
+    }
 }
