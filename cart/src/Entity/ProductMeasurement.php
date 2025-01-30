@@ -25,9 +25,6 @@ class ProductMeasurement
     #[ORM\Column]
     private ?int $length = null;
 
-    #[ORM\OneToOne(targetEntity: Product::class, mappedBy: 'measurement')]
-    private Product $measurement;
-
     public function getId(): ?int
     {
         return $this->id;
