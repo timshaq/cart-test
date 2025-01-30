@@ -2,24 +2,54 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Message\UserSignUp;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Constraints;
 
-final class UserController extends AbstractController
+final class UserController extends CommonController
 {
-    #[Route('/registration', name: 'registration', methods: ['POST'])]
-    public function registration(Request $request): JsonResponse
+    /**
+     * @throws \JsonException
+     * @throws ExceptionInterface
+     */
+    #[Route('/sign-up', name: 'sign-up', methods: ['POST'])]
+    public function signUp(
+        Request                    $request,
+        MessageBusInterface        $messageBus
+    ): JsonResponse
     {
-        /* send to kafka
-{
-	"type": "string", //"sms", "email",
-	"userPhone": string, // if email type passed
-	"userEmail": string, // if sms type passed
-	"promoId": ?string //uuid4
-}
-         */
+        $payload = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        $this->validate($payload, new Constraints\Collection([
+            'fields' => [
+                'type' => new Constraints\Required(new Constraints\Choice(['sms', 'email'])), // todo: change to CONST
+                'promoId' => new Constraints\Optional(new Constraints\Type('string')),
+            ],
+            'allowExtraFields' => true
+        ]));
+
+        $contactAssert = ['allowExtraFields' => true];
+        if ($payload['type'] === 'sms') {
+            $contactAssert['fields']['userPhone'] = new Constraints\Required([
+                new Constraints\Regex('/^\d{10}$/'),
+            ]);
+        } else {
+            $contactAssert['fields']['userEmail'] = new Constraints\Required([
+                new Constraints\Email()
+            ]);
+        }
+        $this->validate($payload, new Constraints\Collection($contactAssert));
+
+        $msg = new UserSignUp('sms', '9523399293', 'test@test.com', null);
+
+        // todo: need only phone or email
+        // todo: why send messageKey and etc props in body (value)
+        $messageBus->dispatch($msg);
+
         return $this->json([
             'message' => 'Welcome to your new controller!',
             'path' => 'src/Controller/UserController.php',

@@ -7,8 +7,17 @@ class Message
 {
     protected string $messageKey;
     protected array $messageHeaders = [];
-    protected int $messageOffset;
+    protected ?int $messageOffset = null;
     protected int $messageTimestamp;
+
+    /**
+     * @throws \Exception
+     */
+    public function __construct()
+    {
+        $this->setMessageKey(bin2hex(random_bytes(8)));
+        $this->setMessageTimestamp((new \DateTime())->getTimestamp());
+    }
 
     public function getMessageKey(): string
     {
@@ -30,7 +39,7 @@ class Message
         $this->messageHeaders = $messageHeaders;
     }
 
-    public function getMessageOffset(): string
+    public function getMessageOffset(): ?string
     {
         return $this->messageOffset;
     }
@@ -40,21 +49,32 @@ class Message
         $this->messageOffset = $messageOffset;
     }
 
-    public function getMessageTimestamp(): string
+    public function getMessageTimestamp(): int
     {
         return $this->messageTimestamp;
     }
 
-    public function setMessageTimestamp(string $messageTimestamp): void
+    public function setMessageTimestamp(int $messageTimestamp): void
     {
         $this->messageTimestamp = $messageTimestamp;
     }
 
     public function setMessageData(array $encodedEnvelope): void
     {
-        $this->setMessageKey($encodedEnvelope['key']);
-        $this->setMessageHeaders($encodedEnvelope['headers']);
-        $this->setMessageOffset($encodedEnvelope['offset']);
-        $this->setMessageTimestamp($encodedEnvelope['timestamp']);
+        if (isset($encodedEnvelope['key'])) {
+            $this->setMessageKey($encodedEnvelope['key']);
+        }
+
+        if (isset($encodedEnvelope['headers'])) {
+            $this->setMessageHeaders($encodedEnvelope['headers']);
+        }
+
+        if (isset($encodedEnvelope['offset'])) {
+            $this->setMessageOffset($encodedEnvelope['offset']);
+        }
+
+        if (isset($encodedEnvelope['timestamp'])) {
+            $this->setMessageTimestamp($encodedEnvelope['timestamp']);
+        }
     }
 }

@@ -17,6 +17,7 @@ final class Product extends Message
         private ?string $description = null,
     )
     {
+        parent::__construct();
     }
 
     public function getId(): int

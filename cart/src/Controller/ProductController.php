@@ -13,6 +13,8 @@ final class ProductController extends AbstractController
     public function products(ProductRepository $repository): JsonResponse
     {
         // todo: pagination
+        // todo: sort (cost)
+        // todo: filters (name/description, cost, weight, height, width, length)
         return $this->json($repository->findAll());
     }
 }

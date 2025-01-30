@@ -8,14 +8,14 @@ framework:
             # async: '%env(MESSENGER_TRANSPORT_DSN)%'
             # failed: 'doctrine://default?queue_name=failed'
             # sync: 'sync://'
-            producer:
+            user_sign_up_producer:
                 dsn: '%env(KAFKA_URL)%'
-                serializer: App\MessageSerializer\ProductSerializer
+                serializer: App\MessageSerializer\UserSignUpSerializer
                 options:
                     flushTimeout: 10000
                     flushRetries: 5
                     topic:
-                        name: 'events'
+                        name: 'users'
                     kafka_conf:
                         security.protocol: 'plaintext' #'sasl_ssl'
 #                        ssl.ca.location: '%kernel.project_dir%/config/kafka/ca.pem'
@@ -43,7 +43,8 @@ framework:
                         auto.offset.reset: 'earliest'
 
         routing:
-            App\Message\Product: product_consumer            # Route your messages to the transports
+            App\Message\Product: product_consumer
+            App\Message\UserSignUp: user_sign_up_producer
             # 'App\Message\YourMessage': async
 
 # when@test:

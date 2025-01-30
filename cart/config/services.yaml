@@ -19,7 +19,13 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\MessageSerializer\MessageSerializer:
+        arguments:
+            $serializer: '@serializer'
     App\MessageSerializer\ProductSerializer:
+        arguments:
+            $serializer: '@serializer'
+    App\MessageSerializer\UserSignUpSerializer:
         arguments:
             $serializer: '@serializer'
 
