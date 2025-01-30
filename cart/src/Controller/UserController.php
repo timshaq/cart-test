@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Message\UserSignUp;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,12 +15,13 @@ final class UserController extends CommonController
     /**
      * @throws \JsonException
      * @throws ExceptionInterface
+     * @throws \Exception
      */
     #[Route('/sign-up', name: 'sign-up', methods: ['POST'])]
     public function signUp(
         Request                    $request,
         MessageBusInterface        $messageBus
-    ): JsonResponse
+    )
     {
         $payload = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
@@ -44,15 +45,17 @@ final class UserController extends CommonController
         }
         $this->validate($payload, new Constraints\Collection($contactAssert));
 
-        $msg = new UserSignUp('sms', '9523399293', 'test@test.com', null);
+        $msg = new UserSignUp(
+            $payload['type'],
+            $payload['type'] === 'sms' ? $payload['userPhone'] : null,
+            $payload['type'] === 'email' ? $payload['userEmail'] : null,
+            $payload['promoId']
+        );
 
         // todo: need only phone or email
         // todo: why send messageKey and etc props in body (value)
         $messageBus->dispatch($msg);
 
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/UserController.php',
-        ]);
+        return new Response();
     }
 }

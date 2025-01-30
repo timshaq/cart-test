@@ -5,6 +5,7 @@ namespace App\Message;
 
 final class UserSignUp extends Message
 {
+    // todo: serialize callback for dynamic create $userPhone or $userEmail
     public function __construct(
         private string $type,
         private ?string $userPhone = null,

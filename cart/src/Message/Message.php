@@ -3,11 +3,17 @@
 namespace App\Message;
 
 
+use Symfony\Component\Serializer\Attribute\Ignore;
+
 class Message
 {
+    #[Ignore]
     protected string $messageKey;
+    #[Ignore]
     protected array $messageHeaders = [];
+    #[Ignore]
     protected ?int $messageOffset = null;
+    #[Ignore]
     protected int $messageTimestamp;
 
     /**
