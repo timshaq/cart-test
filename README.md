@@ -1,15 +1,34 @@
-# e-store_ewmw_d
+# cart
 
+## Start
+### Configure
+- unsample *.sample files
+- set .env parameters (DB, Kafka DSN, JWT, etc.)
 
+### Build image and run project
+```bash
+docker compose build
+```
+```bash
+docker compose up -d
+```
 
-> PHP is using the following php.ini file:
-WARNING: No configuration file (php.ini) used by PHP!
+### Enter in container bash
+```bash
+docker exec -it cart bash
+```
 
-* intl extension should be available
-  > Install and enable the intl extension (used for validators).
+#### Install packages
+```bash
+composer install
+```
 
-* a PHP accelerator should be installed
-  > Install and/or enable a PHP accelerator (highly recommended).
+#### Create jwt keys
+```bash
+php bin/console lexik:jwt:generate-keypair
+```
 
-* short_open_tag should be disabled in php.ini
-  > Set short_open_tag to off in php.ini*.
+#### Migrate db
+```bash
+php bin/console doctrine:migrations:migrate
+```
