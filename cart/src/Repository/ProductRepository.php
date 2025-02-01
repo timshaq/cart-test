@@ -24,11 +24,11 @@ class ProductRepository extends ServiceEntityRepository
 
         try {
             $product = $this->findOneBy(['outId' => $messageProduct->getId()]);
-            // todo: why consumer become producer if next line ($product)
             if (!$product) {
                 $product = new Product();
                 $product->setMeasurement(new ProductMeasurement());
             }
+            $product->setOutId($messageProduct->getId());
             $product->setName($messageProduct->getName());
             $product->setDescription($messageProduct->getDescription());
             $product->setCost($messageProduct->getCost());
@@ -42,13 +42,12 @@ class ProductRepository extends ServiceEntityRepository
             $product->getMeasurement()->setWidth($messageProduct->getMeasurements()->getWidth());
 
             $this->getEntityManager()->persist($product);
-            $this->getEntityManager()->persist($product->getMeasurement());
             $this->getEntityManager()->flush();
+            $this->getEntityManager()->commit();
         } catch (\Throwable $e) {
             $this->getEntityManager()->rollback();
+            // todo: bug: endless produce message to topic
             throw new \RuntimeException($e->getMessage(), $e->getCode(), $e->getPrevious());
         }
-
-        $this->getEntityManager()->commit();
     }
 }

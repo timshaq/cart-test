@@ -15,7 +15,11 @@
 - продакшн
 
 
-
+CartItem
+id
+user_id
+product_id
+date
 
 
 
