@@ -23,7 +23,7 @@ class ProductRepository extends ServiceEntityRepository
         $this->getEntityManager()->beginTransaction();
 
         try {
-            $product = $this->find($messageProduct->getId());
+            $product = $this->findOneBy(['outId' => $messageProduct->getId()]);
             // todo: why consumer become producer if next line ($product)
             if (!$product) {
                 $product = new Product();

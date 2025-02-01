@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\ProductRepository;
+use App\Repository\OrderProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ProductRepository::class)]
-class Product
+#[ORM\Entity(repositoryClass: OrderProductRepository::class)]
+class OrderProduct
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -14,13 +14,13 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $outId = null;
+    private ?int $orderId = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    #[ORM\Column]
+    private ?int $productId = null;
 
-    #[ORM\Column(length: 1000, nullable: true)]
-    private ?string $description = null;
+    #[ORM\Column]
+    private ?int $measurementId = null;
 
     #[ORM\Column]
     private ?int $cost = null;
@@ -28,13 +28,10 @@ class Product
     #[ORM\Column]
     private ?int $tax = null;
 
-    #[ORM\Column]
-    private ?int $version = null;
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
 
-    #[ORM\Column]
-    private ?int $measurementId = null;
-
-    #[ORM\OneToOne(targetEntity: ProductMeasurement::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: ProductMeasurement::class)]
     #[ORM\JoinColumn(name: 'measurement_id', referencedColumnName: 'id')]
     private ProductMeasurement $measurement;
 
@@ -50,26 +47,26 @@ class Product
         return $this;
     }
 
-    public function getName(): ?string
+    public function getOrderId(): ?int
     {
-        return $this->name;
+        return $this->orderId;
     }
 
-    public function setName(string $name): static
+    public function setOrderId(int $orderId): static
     {
-        $this->name = $name;
+        $this->orderId = $orderId;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getProductId(): ?int
     {
-        return $this->description;
+        return $this->productId;
     }
 
-    public function setDescription(?string $description): static
+    public function setProductId(int $productId): static
     {
-        $this->description = $description;
+        $this->productId = $productId;
 
         return $this;
     }
@@ -98,14 +95,14 @@ class Product
         return $this;
     }
 
-    public function getVersion(): ?int
+    public function getName(): ?string
     {
-        return $this->version;
+        return $this->name;
     }
 
-    public function setVersion(int $version): static
+    public function setName(string $name): static
     {
-        $this->version = $version;
+        $this->name = $name;
 
         return $this;
     }
