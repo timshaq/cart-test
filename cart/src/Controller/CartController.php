@@ -46,8 +46,7 @@ final class CartController extends CommonController
             $entityManager->persist($user);
             $entityManager->flush();
             $entityManager->commit();
-        } catch (\Throwable $e) {
-            dump($e->getMessage());
+        } catch (\Throwable) {
             $entityManager->rollback();
             throw new \RuntimeException('Can\'t add product to cart');
         }

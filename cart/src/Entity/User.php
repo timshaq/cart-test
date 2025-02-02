@@ -38,6 +38,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Collection $cartItems = null;
 
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Collection $orders = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -129,5 +132,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCartItems(?Collection $cartItems): void
     {
         $this->cartItems = $cartItems;
+    }
+
+    public function getOrders(): ?Collection
+    {
+        return $this->orders;
+    }
+
+    public function setOrders(?Collection $orders): void
+    {
+        $this->orders = $orders;
     }
 }

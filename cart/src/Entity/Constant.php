@@ -8,6 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ConstantRepository::class)]
 class Constant
 {
+    public const ORDER_STATUS_PAID_ID = 101;
+    public const ORDER_STATUS_ASSEMBLY_ID = 102;
+    public const ORDER_STATUS_DELIVERY_ID = 103;
+    public const ORDER_STATUS_COMPLETED_ID = 104;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -28,13 +33,6 @@ class Constant
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     public function getTypeId(): ?int

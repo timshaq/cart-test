@@ -20,63 +20,33 @@ class Order
     private ?int $userId = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date = null;
+    private \DateTimeInterface $date;
 
     #[ORM\Column]
     private ?int $statusId = null;
 
+    #[ORM\OneToOne(targetEntity: Constant::class)]
+    #[ORM\JoinColumn(name: 'status_id', referencedColumnName: 'id')]
+    private ?Constant $status = null;
+
     #[ORM\Column]
     private ?int $cost = null;
 
-    #[ORM\OneToMany(targetEntity: OrderProduct::class, mappedBy: 'order_id', cascade: ['persist', 'remove'])]
-    private Collection $products;
+    #[ORM\OneToMany(targetEntity: OrderProduct::class, mappedBy: 'order', cascade: ['persist', 'remove'])]
+    private ?Collection $products = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    public function __construct()
+    {
+        $this->date = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getUserId(): ?int
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(int $userId): static
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    public function getDate(): ?\DateTimeInterface
-    {
-        return $this->date;
-    }
-
-    public function setDate(\DateTimeInterface $date): static
-    {
-        $this->date = $date;
-
-        return $this;
-    }
-
-    public function getStatusId(): ?int
-    {
-        return $this->statusId;
-    }
-
-    public function setStatusId(int $statusId): static
-    {
-        $this->statusId = $statusId;
-
-        return $this;
     }
 
     public function getCost(): ?int
@@ -99,5 +69,30 @@ class Order
     public function setProducts(Collection $products): void
     {
         $this->products = $products;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): void
+    {
+        $this->user = $user;
+    }
+
+    public function getDate(): \DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function getStatus(): ?Constant
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?Constant $status): void
+    {
+        $this->status = $status;
     }
 }

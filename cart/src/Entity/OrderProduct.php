@@ -35,28 +35,18 @@ class OrderProduct
     #[ORM\JoinColumn(name: 'measurement_id', referencedColumnName: 'id')]
     private ProductMeasurement $measurement;
 
+    #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Order $order;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
     public function getOrderId(): ?int
     {
         return $this->orderId;
-    }
-
-    public function setOrderId(int $orderId): static
-    {
-        $this->orderId = $orderId;
-
-        return $this;
     }
 
     public function getProductId(): ?int
@@ -115,5 +105,15 @@ class OrderProduct
     public function setMeasurement(ProductMeasurement $measurement): void
     {
         $this->measurement = $measurement;
+    }
+
+    public function getOrder(): Order
+    {
+        return $this->order;
+    }
+
+    public function setOrder(Order $order): void
+    {
+        $this->order = $order;
     }
 }

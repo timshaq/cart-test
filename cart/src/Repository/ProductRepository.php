@@ -44,10 +44,10 @@ class ProductRepository extends ServiceEntityRepository
             $this->getEntityManager()->persist($product);
             $this->getEntityManager()->flush();
             $this->getEntityManager()->commit();
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             $this->getEntityManager()->rollback();
             // todo: bug: endless produce message to topic
-            throw new \RuntimeException($e->getMessage(), $e->getCode(), $e->getPrevious());
+            throw new \RuntimeException('Can\'t create or update Product');
         }
     }
 }
