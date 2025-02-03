@@ -7,7 +7,7 @@ final class UpdateOrderStatus extends Message
 {
     public function __construct(
         private int $orderId,
-        private string $statusId,
+        private int $statusId,
     )
     {
         parent::__construct();
@@ -18,7 +18,7 @@ final class UpdateOrderStatus extends Message
         return $this->orderId;
     }
 
-    public function getStatusId(): string
+    public function getStatusId(): int
     {
         return $this->statusId;
     }

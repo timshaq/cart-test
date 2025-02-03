@@ -51,7 +51,7 @@ framework:
                         name: 'order-status'
                     kafka_conf:
                         enable.auto.offset.store: 'false'
-                        group.id: 'group-products' # should be unique per consumer
+                        group.id: 'group-order-status' # should be unique per consumer
                         security.protocol: 'plaintext'
                         max.poll.interval.ms: '45000'
                     topic_conf:

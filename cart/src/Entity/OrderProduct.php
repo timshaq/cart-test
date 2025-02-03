@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\OrderProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity(repositoryClass: OrderProductRepository::class)]
 class OrderProduct
@@ -35,6 +36,7 @@ class OrderProduct
     #[ORM\JoinColumn(name: 'measurement_id', referencedColumnName: 'id')]
     private ProductMeasurement $measurement;
 
+    #[Ignore]
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
     private Order $order;
