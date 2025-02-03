@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ConstantRepository::class)]
 class Constant
 {
+    public const TYPE_ID_ORDER_STATUS = 100;
     public const ORDER_STATUS_PAID_ID = 101;
     public const ORDER_STATUS_ASSEMBLY_ID = 102;
     public const ORDER_STATUS_DELIVERY_ID = 103;

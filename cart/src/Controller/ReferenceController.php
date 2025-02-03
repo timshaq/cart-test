@@ -2,18 +2,28 @@
 
 namespace App\Controller;
 
+use App\Entity\Constant;
+use App\Repository\ConstantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class ReferenceController extends AbstractController
 {
-    #[Route('/reference', name: 'reference')]
-    public function index(): JsonResponse
+    public function __construct(
+        private ConstantRepository $repository
+    )
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/ReferenceController.php',
-        ]);
+    }
+
+    private function byTypeId(int $id)
+    {
+        return $this->repository->findBy(['typeId' => $id]);
+    }
+
+    #[Route('/reference/order/status', name: 'reference')]
+    public function orderStatus(): JsonResponse
+    {
+        return $this->json($this->byTypeId(Constant::TYPE_ID_ORDER_STATUS));
     }
 }
