@@ -16,12 +16,12 @@ final class ReferenceController extends AbstractController
     {
     }
 
-    private function byTypeId(int $id)
+    private function byTypeId(int $id): array
     {
         return $this->repository->findBy(['typeId' => $id]);
     }
 
-    #[Route('/reference/order/status', name: 'reference')]
+    #[Route('/reference/order/status', name: 'reference', methods: ['GET'])]
     public function orderStatus(): JsonResponse
     {
         return $this->json($this->byTypeId(Constant::TYPE_ID_ORDER_STATUS));

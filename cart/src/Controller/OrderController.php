@@ -7,8 +7,10 @@ use App\Entity\Constant;
 use App\Entity\Order;
 use App\Entity\OrderProduct;
 use App\Entity\User;
+use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +19,7 @@ use Symfony\Component\Validator\Constraints;
 
 final class OrderController extends CommonController
 {
-    #[Route('/order', name: 'create', methods: ['POST'])]
+    #[Route('/order', name: 'order_create', methods: ['POST'])]
     public function create(
         Request $request,
         EntityManagerInterface $entityManager
@@ -107,5 +109,21 @@ final class OrderController extends CommonController
 	}
 }
          */
+    }
+
+    #[Route('/order/{id}/status', name: 'order_status', methods: ['GET'])]
+    public function status(int $id, OrderRepository $orderRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $order = $orderRepository->find($id);
+        if (!$order) {
+            throw new BadRequestException('Order not found');
+        }
+        if ($order->getUser()->getId() !== $user->getId()) {
+            throw new AccessDeniedException('Order not found');
+        }
+
+        return $this->json($order->getStatus()); // todo: serialize?
     }
 }

@@ -37,7 +37,7 @@ class Order
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    private User $user;
 
     public function __construct()
     {
@@ -71,12 +71,12 @@ class Order
         $this->products = $products;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): void
+    public function setUser(User $user): void
     {
         $this->user = $user;
     }

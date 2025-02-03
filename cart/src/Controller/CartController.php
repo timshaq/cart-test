@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class CartController extends CommonController
 {
-    #[Route('/cart/add/{productId}', name: 'cart-add-item', methods: ['POST'])]
+    #[Route('/cart/add/{productId}', name: 'cart_add_item', methods: ['POST'])]
     public function addCartItem(
         EntityManagerInterface $entityManager,
         ProductRepository $productRepository,
