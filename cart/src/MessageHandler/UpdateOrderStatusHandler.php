@@ -2,7 +2,7 @@
 
 namespace App\MessageHandler;
 
-use App\Message\UpdateOrderStatus;
+use App\Message\Consume\UpdateOrderStatus;
 use App\Service\AdminService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 

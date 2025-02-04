@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Message;
+namespace App\Message\Consume\Product;
 
 use Symfony\Component\Serializer\Attribute\SerializedName;
 

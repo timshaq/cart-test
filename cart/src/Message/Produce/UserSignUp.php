@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Message;
+namespace App\Message\Produce;
 
+
+use App\Message\Message;
 
 final class UserSignUp extends Message
 {

@@ -73,7 +73,9 @@ final class OrderController extends CommonController
             $order->setUser($user);
 
             $user->setCartItems(new ArrayCollection());
-            $user->getOrders()->add($order);
+            $orders = $user->getOrders() ?? new ArrayCollection();
+            $orders->add($order);
+            $user->setOrders($orders);
 
             $entityManager->persist($user);
             $entityManager->flush();

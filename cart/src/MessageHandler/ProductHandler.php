@@ -2,7 +2,7 @@
 
 namespace App\MessageHandler;
 
-use App\Message\Product;
+use App\Message\Consume\Product\Product;
 use App\Repository\ProductRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 

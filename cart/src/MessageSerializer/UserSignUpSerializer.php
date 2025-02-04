@@ -2,7 +2,7 @@
 
 namespace App\MessageSerializer;
 
-use App\Message\UserSignUp;
+use App\Message\Produce\UserSignUp;
 
 final class UserSignUpSerializer extends MessageSerializer
 {

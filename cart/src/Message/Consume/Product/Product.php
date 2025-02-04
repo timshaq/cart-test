@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Message;
+namespace App\Message\Consume\Product;
 
+use App\Message\Message;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class Product extends Message

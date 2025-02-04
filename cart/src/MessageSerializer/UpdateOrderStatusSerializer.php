@@ -2,7 +2,7 @@
 
 namespace App\MessageSerializer;
 
-use App\Message\UpdateOrderStatus;
+use App\Message\Consume\UpdateOrderStatus;
 
 final class UpdateOrderStatusSerializer extends MessageSerializer
 {
