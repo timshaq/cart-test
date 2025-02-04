@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Constant;
 use App\Entity\User;
 use App\Message\Produce\UserSignUp;
 use App\Repository\UserRepository;
@@ -24,8 +25,8 @@ final class AuthController extends CommonController
      */
     #[Route('/sign-up', name: 'sign-up', methods: ['POST'])]
     public function signUp(
-        Request                    $request,
-        MessageBusInterface        $messageBus,
+        Request $request,
+        MessageBusInterface $messageBus,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher,
         UserRepository $userRepository
@@ -35,7 +36,10 @@ final class AuthController extends CommonController
 
         $this->validate($payload, new Constraints\Collection([
             'fields' => [
-                'type' => new Constraints\Required(new Constraints\Choice(['sms', 'email'])), // todo: change to CONST
+                'notificationTypeId' => new Constraints\Required(new Constraints\Choice([
+                    Constant::NOTIFICATION_TYPE_SMS_ID,
+                    Constant::NOTIFICATION_TYPE_EMAIL_ID,
+                ])), // todo: change to CONST
                 'password' => new Constraints\Required([
                     new Constraints\Length(['min' => 6, 'max' => 32]),
                     new Constraints\NotBlank()
@@ -45,12 +49,14 @@ final class AuthController extends CommonController
             'allowExtraFields' => true
         ]));
 
+        // todo: change logic
         $contactAssert = ['allowExtraFields' => true];
-        if ($payload['type'] === 'sms') {
+        if ($payload['notificationTypeId'] === Constant::NOTIFICATION_TYPE_SMS_ID) {
             $contactAssert['fields']['userPhone'] = new Constraints\Required([
                 new Constraints\Regex('/^\d{10}$/'),
             ]);
-        } else {
+        }
+        if ($payload['notificationTypeId'] === Constant::NOTIFICATION_TYPE_EMAIL_ID) {
             $contactAssert['fields']['userEmail'] = new Constraints\Required([
                 new Constraints\Email()
             ]);
@@ -68,6 +74,8 @@ final class AuthController extends CommonController
 
         $user->setPromoId($payload['promoId']);
         $user->setLogin($login);
+        $user->setPhone($payload['userPhone'] ?? null);
+        $user->setEmail($payload['userEmail'] ?? null);
 
         $hashedPassword = $passwordHasher->hashPassword($user, $payload['password']);
         $user->setPassword($hashedPassword);
@@ -77,8 +85,8 @@ final class AuthController extends CommonController
 
         $msg = new UserSignUp(
             $payload['type'],
-            $payload['type'] === 'sms' ? $payload['userPhone'] : null,
-            $payload['type'] === 'email' ? $payload['userEmail'] : null,
+            $payload['userPhone'] ?? null,
+            $payload['userEmail'] ?? null,
             $payload['promoId']
         );
 

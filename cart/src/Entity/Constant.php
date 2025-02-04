@@ -14,6 +14,10 @@ class Constant
     public const ORDER_STATUS_DELIVERY_ID = 103;
     public const ORDER_STATUS_COMPLETED_ID = 104;
 
+    public const TYPE_ID_NOTIFICATION_TYPE = 200;
+    public const NOTIFICATION_TYPE_SMS_ID = 201;
+    public const NOTIFICATION_TYPE_EMAIL_ID = 202;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

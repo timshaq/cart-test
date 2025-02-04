@@ -7,6 +7,7 @@ use App\Entity\Constant;
 use App\Entity\Order;
 use App\Entity\OrderProduct;
 use App\Entity\User;
+use App\Message\Produce\NewOrder\NewOrder;
 use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,15 +15,22 @@ use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Constraints;
 
 final class OrderController extends CommonController
 {
+    /**
+     * @throws \JsonException
+     * @throws ExceptionInterface
+     */
     #[Route('/order', name: 'order_create', methods: ['POST'])]
     public function create(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        MessageBusInterface $messageBus
     ): Response
     {
         $payload = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
@@ -85,8 +93,24 @@ final class OrderController extends CommonController
             throw new \RuntimeException('Can\'t create order');
         }
 
+        // todo: move to try?
+        $messageData = [
+            'type' => $user->getNotificationType()->getValue(),
+            'notificationType' => 'success_payment',
+            'orderNum' => $order->getId(),
+            'orderItems' => [],//$order->getProducts(), // todo: change
+            'deliveryType' => $payload['deliveryType'],
+            'deliveryAddress' => $payload['deliveryAddress']
+        ];
+        if ($user->getNotificationType()->getId() === Constant::NOTIFICATION_TYPE_SMS_ID) {
+            $messageData['userPhone'] = $user->getPhone();
+        }
+        if ($user->getNotificationType()->getId() === Constant::NOTIFICATION_TYPE_EMAIL_ID) {
+            $messageData['userEmail'] = $user->getEmail();
+        }
 
-        // todo: send to kafka
+        $message = $this->serializer->deserialize($messageData, NewOrder::class, 'array');
+        $messageBus->dispatch($message);
 
         return new Response();
         /* produce to kafka

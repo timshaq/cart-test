@@ -35,6 +35,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?string $promoId = null;
 
+    #[ORM\Column]
+    private ?int $notificationTypeId = null;
+
+    #[ORM\OneToOne(targetEntity: Constant::class)]
+    #[ORM\JoinColumn(name: 'notification_type_id', referencedColumnName: 'id')]
+    private Constant $notificationType;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $email = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $phone = null;
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): void
+    {
+        $this->phone = $phone;
+    }
+
     #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Collection $cartItems = null;
 
@@ -142,5 +175,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setOrders(?Collection $orders): void
     {
         $this->orders = $orders;
+    }
+
+    public function getNotificationType(): Constant
+    {
+        return $this->notificationType;
+    }
+
+    public function setNotificationType(Constant $notificationType): void
+    {
+        $this->notificationType = $notificationType;
     }
 }

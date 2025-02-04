@@ -22,6 +22,16 @@ framework:
 #                        sasl.username: '%env(KAFKA_SASL_USERNAME)%'
 #                        sasl.password: '%env(KAFKA_SASL_PASSWORD)%'
 #                        sasl.mechanisms: 'SCRAM-SHA-256'
+            new_order_producer:
+                dsn: '%env(KAFKA_URL)%'
+                serializer: App\MessageSerializer\NewOrderSerializer
+                options:
+                    flushTimeout: 10000
+                    flushRetries: 5
+                    topic:
+                        name: 'new-orders'
+                    kafka_conf:
+                        security.protocol: 'plaintext'
             product_consumer:
                 dsn: '%env(KAFKA_URL)%'
                 serializer: App\MessageSerializer\ProductSerializer
@@ -61,6 +71,7 @@ framework:
             App\Message\Consume\Product\Product: product_consumer
             App\Message\Consume\UpdateOrderStatus: order_status_consumer
             App\Message\Produce\UserSignUp: user_sign_up_producer
+            App\Message\Produce\NewOrder\NewOrder: new_order_producer
 
 # when@test:
 #    framework:
