@@ -38,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $notificationTypeId = null;
 
-    #[ORM\OneToOne(targetEntity: Constant::class)]
+    #[ORM\ManyToOne(targetEntity: Constant::class)]
     #[ORM\JoinColumn(name: 'notification_type_id', referencedColumnName: 'id')]
     private Constant $notificationType;
 

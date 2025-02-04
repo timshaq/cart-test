@@ -26,7 +26,7 @@ class Order
     #[ORM\Column]
     private ?int $statusId = null;
 
-    #[ORM\OneToOne(targetEntity: Constant::class)]
+    #[ORM\ManyToOne(targetEntity: Constant::class)]
     #[ORM\JoinColumn(name: 'status_id', referencedColumnName: 'id')]
     private ?Constant $status = null;
 
