@@ -3,6 +3,7 @@
 namespace App\Tests\Dto;
 
 use App\Dto\UserSignUp;
+use App\Entity\Constant;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -19,32 +20,54 @@ final class UserSignUpTest extends KernelTestCase
         $this->serializer = self::getContainer()->get(SerializerInterface::class);
     }
 
-    public function testIndex(): void
+    /**
+     * @dataProvider positiveCasesProvider
+     */
+    public function testPositiveCases(string $json): void
     {
-        $userSignUpData = [
-            'notificationTypeId' => 202,
-            'password' => '100500',
-            'promoId' => 'asd',
-            'phone' => '9523366022',
-            'email' => null,
-        ];
-
-        $userSignUpData = json_encode($userSignUpData, JSON_THROW_ON_ERROR);
-
         $userSignUp = $this->serializer->deserialize(
-            $userSignUpData,
+            $json,
             UserSignUp::class,
             'json'
         );
-//        dump($userSignUp);
 
         $violations = $this->validator->validate($userSignUp);
-        if ($violations->count() > 0) {
-            $violation = $violations->get(0);
-            $message = $violation->getPropertyPath() . ': ' . $violation->getMessage();
-            dd($message);
-        }
 
-        dd('ok');
+        $this->assertEquals(0, $violations->count());
+    }
+
+    public function positiveCasesProvider(): array
+    {
+        $data = [
+            [
+                'notificationTypeId' => Constant::NOTIFICATION_TYPE_SMS_ID,
+                'phone' => '4563251248',
+                'password' => '123456',
+                'promoId' => null
+            ],
+            [
+                'notificationTypeId' => Constant::NOTIFICATION_TYPE_SMS_ID,
+                'phone' => '4563251248',
+                'password' => '123456',
+                'promoId' => 'promo-id'
+            ],
+            [
+                'notificationTypeId' => Constant::NOTIFICATION_TYPE_EMAIL_ID,
+                'email' => 'name@mail.com',
+                'password' => '123456',
+                'promoId' => null
+            ],
+            [
+                'notificationTypeId' => Constant::NOTIFICATION_TYPE_EMAIL_ID,
+                'email' => 'name@mail.com',
+                'password' => str_repeat('1', 32),
+                'promoId' => 'promo-id'
+            ],
+        ];
+
+        return array_map(
+            static fn (array $item) => [json_encode($item, JSON_THROW_ON_ERROR)],
+            $data
+        );
     }
 }
