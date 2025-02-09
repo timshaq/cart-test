@@ -32,7 +32,7 @@ class OrderProduct
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToOne(targetEntity: ProductMeasurement::class)]
+    #[ORM\ManyToOne(targetEntity: ProductMeasurement::class)]
     #[ORM\JoinColumn(name: 'measurement_id', referencedColumnName: 'id')]
     private ProductMeasurement $measurement;
 

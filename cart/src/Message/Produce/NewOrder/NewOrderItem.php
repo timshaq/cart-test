@@ -3,7 +3,7 @@
 namespace App\Message\Produce\NewOrder;
 
 
-final class NewOrderItems
+final class NewOrderItem
 {
     public function __construct(
         private string $name,

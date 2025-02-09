@@ -112,4 +112,14 @@ class Product
     {
         $this->measurement = $measurement;
     }
+
+    public function getOutId(): ?int
+    {
+        return $this->outId;
+    }
+
+    public function setOutId(?int $outId): void
+    {
+        $this->outId = $outId;
+    }
 }

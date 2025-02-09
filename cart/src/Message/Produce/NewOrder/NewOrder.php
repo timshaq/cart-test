@@ -8,14 +8,14 @@ use App\Message\Message;
 final class NewOrder extends Message
 {
     public function __construct(
-        private string $type,
-        private string $notificationType,
-        private string $orderNum,
-        private NewOrderItems $orderItems,
-        private string $deliveryType,
+        private string                  $type,
+        private string                  $notificationType,
+        private string                  $orderNum,
+        private array                   $orderItems,
+        private string                  $deliveryType,
         private NewOrderDeliveryAddress $deliveryAddress,
-        private ?string $userPhone = null, // if email type passed
-        private ?string $userEmail = null // if sms type passed
+        private ?string                 $userPhone = null, // if email type passed
+        private ?string                 $userEmail = null // if sms type passed
     )
     {
         parent::__construct();
@@ -56,12 +56,12 @@ final class NewOrder extends Message
         $this->orderNum = $orderNum;
     }
 
-    public function getOrderItems(): NewOrderItems
+    public function getOrderItems(): array
     {
         return $this->orderItems;
     }
 
-    public function setOrderItems(NewOrderItems $orderItems): void
+    public function setOrderItems(array $orderItems): void
     {
         $this->orderItems = $orderItems;
     }
