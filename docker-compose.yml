@@ -31,11 +31,15 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.8.0
     container_name: zookeeper
+    user: 1000:1000
     ports:
       - 22181:2181
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+#    volumes:
+#      - ./vol1/zk-data:/var/lib/zookeeper/data
+# https://docs.confluent.io/platform/current/installation/docker/operations/external-volumes.html
 
   kafka:
     image: confluentinc/cp-kafka:7.8.0
