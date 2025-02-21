@@ -37,9 +37,9 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-#    volumes:
-#      - ./vol1/zk-data:/var/lib/zookeeper/data
-# https://docs.confluent.io/platform/current/installation/docker/operations/external-volumes.html
+    volumes:
+      - ./kafka/zk-data:/var/lib/zookeeper/data
+      - ./kafka/zk-log:/var/lib/zookeeper/log
 
   kafka:
     image: confluentinc/cp-kafka:7.8.0
@@ -57,6 +57,9 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
       - zookeeper
+    volumes:
+      - ./kafka/kafka-data:/var/lib/kafka/data
+    restart: always
 
   kafka-ui:
     image: provectuslabs/kafka-ui:v0.7.2
