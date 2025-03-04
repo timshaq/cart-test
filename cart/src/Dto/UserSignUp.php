@@ -36,22 +36,29 @@ class UserSignUp
     #[Assert\Callback]
     public function validate(ExecutionContextInterface $context): void
     {
-        if (
-            $this->notificationTypeId === Constant::NOTIFICATION_TYPE_SMS_ID &&
-            $this->phone === null
-        ) {
+        if (!isset($this->notificationTypeId)) {
             $context->buildViolation('The field is required.')
-                ->atPath('phone')
+                ->atPath('notification type id')
                 ->addViolation();
+        } else {
+            if (
+                $this->notificationTypeId === Constant::NOTIFICATION_TYPE_SMS_ID &&
+                $this->phone === null
+            ) {
+                $context->buildViolation('The field is required.')
+                    ->atPath('phone')
+                    ->addViolation();
+            }
+
+            if (
+                $this->notificationTypeId === Constant::NOTIFICATION_TYPE_EMAIL_ID &&
+                $this->email === null
+            ) {
+                $context->buildViolation('The field is required.')
+                    ->atPath('email')
+                    ->addViolation();
+            }
         }
 
-        if (
-            $this->notificationTypeId === Constant::NOTIFICATION_TYPE_EMAIL_ID &&
-            $this->email === null
-        ) {
-            $context->buildViolation('The field is required.')
-                ->atPath('email')
-                ->addViolation();
-        }
     }
 }
