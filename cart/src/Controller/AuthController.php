@@ -28,7 +28,7 @@ final class AuthController extends CommonController
         EntityManagerInterface $entityManager,
         UserRepository $userRepository,
         ConstantRepository $constantRepository
-    )
+    ): Response
     {
         $user = $userRepository->createUser($userSignUpDto);
 
