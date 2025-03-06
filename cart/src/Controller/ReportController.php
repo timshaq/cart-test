@@ -11,6 +11,7 @@ final class ReportController extends AbstractController
     #[Route('/report/product', name: 'report_product')]
     public function product(): JsonResponse
     {
+        // todo: make
         /* produce to kafka
 {
 	"reportId": string, //"ebca4412-3965-45a8-bd36-4c1d1b768e7b"
