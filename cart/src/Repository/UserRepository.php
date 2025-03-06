@@ -32,7 +32,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function createUser(UserSignUpDto $userSignUpDto): User
     {
-        $login = $userSignUpDto->phone ?? $userSignUpDto->email;
+        $login = $userSignUpDto->getPhone() ?? $userSignUpDto->getEmail();
 
         $userIsExist = (bool) $this->findOneBy(['login' => $login]);
         if ($userIsExist) {
@@ -41,16 +41,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         $user = new User();
 
-        $user->setPromoId($userSignUpDto->promoId);
-        $user->setLogin($userSignUpDto->phone ?? $userSignUpDto->email);
-        $user->setPhone($userSignUpDto->phone);
-        $user->setEmail($userSignUpDto->email);
+        $user->setPromoId($userSignUpDto->getPromoId());
+        $user->setLogin($userSignUpDto->getPhone() ?? $userSignUpDto->getEmail());
+        $user->setPhone($userSignUpDto->getPhone());
+        $user->setEmail($userSignUpDto->getEmail());
         $user->setNotificationType($this->getEntityManager()->getReference(
             Constant::class,
-            $userSignUpDto->notificationTypeId
+            $userSignUpDto->getNotificationTypeId()
         ));
 
-        $hashedPassword = $this->passwordHasher->hashPassword($user, $userSignUpDto->password);
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $userSignUpDto->getPassword());
         $user->setPassword($hashedPassword);
 
         return $user;

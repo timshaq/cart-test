@@ -36,12 +36,12 @@ final class AuthController extends CommonController
         $entityManager->flush();
 
         // todo: move to EventHandler? create message by User entity
-        $notificationType = $constantRepository->find($userSignUpDto->notificationTypeId);
+        $notificationType = $constantRepository->find($userSignUpDto->getNotificationTypeId());
         $msg = new UserSignUp(
             $notificationType->getValue(),
-            $userSignUpDto->phone,
-            $userSignUpDto->email,
-            $userSignUpDto->promoId
+            $userSignUpDto->getPhone(),
+            $userSignUpDto->getEmail(),
+            $userSignUpDto->getPromoId()
         );
 
         // todo: need only phone or email
