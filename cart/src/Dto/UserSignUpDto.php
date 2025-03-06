@@ -6,7 +6,7 @@ use App\Entity\Constant;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class UserSignUp
+class UserSignUpDto
 {
     #[Assert\NotBlank]
     #[Assert\Choice([

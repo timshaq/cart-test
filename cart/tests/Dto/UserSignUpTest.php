@@ -2,7 +2,7 @@
 
 namespace App\Tests\Dto;
 
-use App\Dto\UserSignUp;
+use App\Dto\UserSignUpDto;
 use App\Entity\Constant;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -31,7 +31,7 @@ final class UserSignUpTest extends KernelTestCase
     {
         $userSignUp = $this->serializer->deserialize(
             $json,
-            UserSignUp::class,
+            UserSignUpDto::class,
             'json'
         );
 
@@ -83,7 +83,7 @@ final class UserSignUpTest extends KernelTestCase
     {
         $userSignUp = $this->serializer->deserialize(
             $json,
-            UserSignUp::class,
+            UserSignUpDto::class,
             'json'
         );
 
