@@ -73,11 +73,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $cartItems;
 
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private ?Collection $orders = null;
+    private Collection $orders;
 
     public function __construct()
     {
         $this->cartItems = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -173,12 +174,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->cartItems = $cartItems;
     }
 
-    public function getOrders(): ?Collection
+    public function getOrders(): Collection
     {
         return $this->orders;
     }
 
-    public function setOrders(?Collection $orders): void
+    public function setOrders(Collection $orders): void
     {
         $this->orders = $orders;
     }
