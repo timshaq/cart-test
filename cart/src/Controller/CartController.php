@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\CartItem;
 use App\Entity\User;
 use App\Repository\ProductRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,31 +17,31 @@ final class CartController extends CommonController
         EntityManagerInterface $entityManager,
         ProductRepository $productRepository,
         int $productId
-    )
+    ): Response
     {
-        /** @var User $user */
-        $user = $this->getUser();
         $product = $productRepository->find($productId);
         if (!$product) {
             throw new BadRequestException('Undefined product');
         }
 
-        $cartItems = $user->getCartItems() ?? new ArrayCollection();
-        $cartHasTheProduct = $cartItems->findFirst(static fn($key, CartItem $item) => $item->getProductId() === $productId);
+        /** @var User $user */
+        $user = $this->getUser();
+        $cartHasTheProduct = $user->getCartItems()
+            ->findFirst(static fn($key, CartItem $item) => $item->getProductId() === $productId);
 
         if ($cartHasTheProduct) {
+            // todo: add count?
             return new Response();
         }
 
+        $entityManager->beginTransaction();
         try {
             $newCartItem = new CartItem();
             $newCartItem->setUser($user);
             $newCartItem->setProduct($product);
 
-            $cartItems->add($newCartItem);
-            $user->setCartItems($cartItems);
+            $user->getCartItems()->add($newCartItem);
 
-            $entityManager->beginTransaction();
             $entityManager->persist($user);
             $entityManager->flush();
             $entityManager->commit();

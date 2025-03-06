@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -69,10 +70,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private ?Collection $cartItems = null;
+    private Collection $cartItems;
 
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Collection $orders = null;
+
+    public function __construct()
+    {
+        $this->cartItems = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -157,12 +163,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->promoId;
     }
 
-    public function getCartItems(): ?Collection
+    public function getCartItems(): Collection
     {
         return $this->cartItems;
     }
 
-    public function setCartItems(?Collection $cartItems): void
+    public function setCartItems(Collection $cartItems): void
     {
         $this->cartItems = $cartItems;
     }
