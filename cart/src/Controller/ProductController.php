@@ -3,18 +3,18 @@
 namespace App\Controller;
 
 use App\Repository\ProductRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class ProductController extends AbstractController
+final class ProductController extends CommonController
 {
     #[Route('/products', name: 'products', methods: ['GET'])]
-    public function products(ProductRepository $repository): JsonResponse
+    public function products(Request $request, ProductRepository $repository): JsonResponse
     {
-        // todo: pagination
-        // todo: sort (cost)
-        // todo: filters (name/description, cost, weight, height, width, length)
-        return $this->json($repository->findAll());
+        $this->setPaginationParameters($request);
+        $data = $repository->getProducts($this->getLimit(), $this->getOffset());
+
+        return $this->getPaginationResponse($data);
     }
 }

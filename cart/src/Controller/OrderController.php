@@ -11,6 +11,7 @@ use App\Repository\OrderRepository;
 use App\Service\OrderService;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -92,5 +93,17 @@ final class OrderController extends CommonController
         }
 
         return $this->json($order->getStatus()); // todo: serialize?
+    }
+
+    #[Route('/orders', name: 'orders', methods: ['GET'])]
+    public function orders(Request $request, OrderRepository $orderRepository): Response
+    {
+        $this->setPaginationParameters($request);
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $data = $orderRepository->getUserOrders($user, $this->getLimit(), $this->getOffset());
+
+        return $this->getPaginationResponse($data);
     }
 }

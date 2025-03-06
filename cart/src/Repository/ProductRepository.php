@@ -50,4 +50,13 @@ class ProductRepository extends ServiceEntityRepository
             throw new \RuntimeException('Can\'t create or update Product');
         }
     }
+
+    public function getProducts(int $limit, int $offset)
+    {
+        return $this->createQueryBuilder('product')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->getQuery()
+            ->getResult();
+    }
 }
