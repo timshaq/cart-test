@@ -68,10 +68,10 @@ framework:
                         auto.offset.reset: 'earliest'
 
         routing:
-            App\Message\Consume\Product\Product: product_consumer
-            App\Message\Consume\UpdateOrderStatus: order_status_consumer
-            App\Message\Produce\UserSignUp: user_sign_up_producer
-            App\Message\Produce\NewOrder\NewOrder: new_order_producer
+            App\Message\Consume\Product\ProductMessage: product_consumer
+            App\Message\Consume\UpdateOrderStatusMessage: order_status_consumer
+            App\Message\Produce\UserSignUpMessage: user_sign_up_producer
+            App\Message\Produce\NewOrder\NewOrderMessage: new_order_producer
 
 # when@test:
 #    framework:

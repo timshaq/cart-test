@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use App\Entity\ProductMeasurement;
-use App\Message\Consume\Product\Product as MessageProduct;
+use App\Message\Consume\Product\ProductMessage as MessageProduct;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

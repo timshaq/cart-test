@@ -2,9 +2,9 @@
 
 namespace App\MessageSerializer;
 
-use App\Message\Produce\UserSignUp;
+use App\Message\Produce\UserSignUpMessage;
 
 final class UserSignUpSerializer extends MessageSerializer
 {
-    protected string $deserializeType = UserSignUp::class;
+    protected string $deserializeType = UserSignUpMessage::class;
 }

@@ -30,7 +30,6 @@ final class CartController extends CommonController
             ->findFirst(static fn($key, CartItem $item) => $item->getProductId() === $productId);
 
         if ($cartHasTheProduct) {
-            // todo: add count?
             return new Response();
         }
 

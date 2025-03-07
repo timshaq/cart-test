@@ -5,17 +5,17 @@ namespace App\Message\Consume\Product;
 use App\Message\Message;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
-final class Product extends Message
+final class ProductMessage extends Message
 {
     public function __construct(
-        private int $id,
-        private string $name,
-        private int $cost,
-        private int $tax,
-        private int $version,
+        private readonly int                $id,
+        private readonly string             $name,
+        private readonly int                $cost,
+        private readonly int                $tax,
+        private readonly int                $version,
         #[SerializedName('measurments')]
-        private ProductMeasurement $measurements,
-        private ?string $description = null,
+        private readonly ProductMeasurement $measurements,
+        private readonly ?string            $description = null,
     )
     {
         parent::__construct();

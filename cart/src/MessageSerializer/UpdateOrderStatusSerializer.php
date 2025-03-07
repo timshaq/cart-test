@@ -2,9 +2,9 @@
 
 namespace App\MessageSerializer;
 
-use App\Message\Consume\UpdateOrderStatus;
+use App\Message\Consume\UpdateOrderStatusMessage;
 
 final class UpdateOrderStatusSerializer extends MessageSerializer
 {
-    protected string $deserializeType = UpdateOrderStatus::class;
+    protected string $deserializeType = UpdateOrderStatusMessage::class;
 }

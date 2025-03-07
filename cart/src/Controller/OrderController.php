@@ -3,18 +3,16 @@
 namespace App\Controller;
 
 use App\Dto\NewOrderDto;
-use App\Entity\Constant;
-use App\Entity\OrderProduct;
 use App\Entity\User;
-use App\Message\Produce\NewOrder\NewOrder;
+use App\Event\OrderCreateEvent;
 use App\Repository\OrderRepository;
 use App\Service\OrderService;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class OrderController extends CommonController
@@ -22,8 +20,8 @@ final class OrderController extends CommonController
     #[Route('/order', name: 'order_create', methods: ['POST'])]
     public function create(
         #[MapRequestPayload] NewOrderDto $newOrderDto,
-        MessageBusInterface $messageBus,
-        OrderService $orderService
+        OrderService $orderService,
+        EventDispatcherInterface $eventDispatcher,
     ): Response
     {
         /** @var User $user */
@@ -38,43 +36,10 @@ final class OrderController extends CommonController
 
         try {
             $order = $orderService->createOrder($user, $newOrderDto);
-
-            // todo: refactor
-            $messageOrderItems = [];
-
-            foreach ($order->getProducts() as $product) {
-                /** @var OrderProduct $product */
-                // todo: change to deserialize
-                $messageOrderItems[] = [
-                    'name' => $product->getName(),
-                    'cost' => $product->getCost(),
-                    'additionalInfo' => null
-                ];
-            }
-
-            $messageData = [
-                'type' => $user->getNotificationType()->getValue(),
-                'notificationType' => 'success_payment',
-                'orderNum' => 'ORD_' . $order->getId(),
-                'orderItems' => $messageOrderItems,
-                'deliveryType' => $newOrderDto->getDeliveryType(),
-                'deliveryAddress' => $newOrderDto->getDeliveryAddress()
-            ];
-            if ($user->getNotificationType()->getId() === Constant::NOTIFICATION_TYPE_SMS_ID) {
-                $messageData['userPhone'] = $user->getPhone();
-            }
-            if ($user->getNotificationType()->getId() === Constant::NOTIFICATION_TYPE_EMAIL_ID) {
-                $messageData['userEmail'] = $user->getEmail();
-            }
-
-            dump($messageData);
-            $messageData = json_encode($messageData);
-            $message = $this->serializer->deserialize($messageData, NewOrder::class, 'json');
-            $messageBus->dispatch($message);
-        } catch (\Throwable $e) {
+            $eventDispatcher->dispatch(new OrderCreateEvent($order), 'order.create');
+        } catch (\Throwable) {
             throw new \RuntimeException('Can\'t create order');
         }
-
 
         return new Response();
     }

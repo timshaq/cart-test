@@ -5,11 +5,11 @@ namespace App\Message\Consume;
 
 use App\Message\Message;
 
-final class UpdateOrderStatus extends Message
+final class UpdateOrderStatusMessage extends Message
 {
     public function __construct(
-        private int $orderId,
-        private int $statusId,
+        private readonly int $orderId,
+        private readonly int $statusId,
     )
     {
         parent::__construct();

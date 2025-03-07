@@ -5,14 +5,14 @@ namespace App\Message\Produce;
 
 use App\Message\Message;
 
-final class UserSignUp extends Message
+final class UserSignUpMessage extends Message
 {
     // todo: serialize callback for dynamic create $userPhone or $userEmail
     public function __construct(
-        private string $type,
-        private ?string $userPhone = null,
-        private ?string $userEmail = null,
-        private ?string $promoId = null,
+        private readonly string  $type,
+        private readonly ?string $userPhone = null,
+        private readonly ?string $userEmail = null,
+        private readonly ?string $promoId = null,
     )
     {
         parent::__construct();

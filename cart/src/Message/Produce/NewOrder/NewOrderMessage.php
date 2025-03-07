@@ -5,7 +5,7 @@ namespace App\Message\Produce\NewOrder;
 
 use App\Message\Message;
 
-final class NewOrder extends Message
+final class NewOrderMessage extends Message
 {
     public function __construct(
         private string                  $type,
@@ -14,16 +14,11 @@ final class NewOrder extends Message
         private array                   $orderItems,
         private string                  $deliveryType,
         private NewOrderDeliveryAddress $deliveryAddress,
-        private ?string                 $userPhone = null, // if email type passed
-        private ?string                 $userEmail = null // if sms type passed
+        private ?string                 $userPhone = null, // todo: if email type passed
+        private ?string                 $userEmail = null // todo: if sms type passed
     )
     {
         parent::__construct();
-    }
-
-    public static function fromArray()
-    {
-
     }
 
     public function getType(): string
