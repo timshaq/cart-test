@@ -1,4 +1,6 @@
 .idea
 cart-database/data/**/*
 !cart-database/data/.gitkeep
+cart-database/test-data/**/*
+!cart-database/test-data/.gitkeep
 .env

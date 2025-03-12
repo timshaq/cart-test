@@ -28,6 +28,19 @@ services:
     volumes:
       - ./cart-database/data:/var/lib/mysql
 
+  cart-database-test:
+    image: mysql:8.0
+    container_name: cart-database-test
+    ports:
+      - 3307:3307
+    environment:
+      MYSQL_ROOT_PASSWORD: ${TEST_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${TEST_MYSQL_DATABASE}
+      MYSQL_USER: ${TEST_MYSQL_USER}
+      MYSQL_PASSWORD: ${TEST_MYSQL_PASSWORD}
+    volumes:
+      - ./cart-database/test-data:/var/lib/mysql
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.8.0
     container_name: zookeeper
