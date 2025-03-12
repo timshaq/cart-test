@@ -5,6 +5,7 @@ namespace App\Tests\Dto;
 use App\Dto\UserSignUpDto;
 use App\Entity\Constant;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Serializer\Exception\MissingConstructorArgumentsException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -77,22 +78,19 @@ final class UserSignUpDtoTest extends KernelTestCase
     }
 
     /**
-     * @dataProvider requiredCasesProvider
+     * @dataProvider requiredConstructCasesProvider
      */
-    public function testRequiredCases(string $json): void
+    public function testRequiredConstructCases(string $json): void
     {
-        $userSignUp = $this->serializer->deserialize(
+        $this->expectException(MissingConstructorArgumentsException::class);
+        $this->serializer->deserialize(
             $json,
             UserSignUpDto::class,
             'json'
         );
-
-        $violations = $this->validator->validate($userSignUp);
-
-        $this->assertGreaterThan(0, $violations->count());
     }
 
-    public function requiredCasesProvider(): array
+    public function requiredConstructCasesProvider(): array
     {
         $data = [
             [
@@ -106,17 +104,44 @@ final class UserSignUpDtoTest extends KernelTestCase
                 'promoId' => null
             ],
             [
+                'phone' => self::VALID_PHONE,
+                'password' => self::VALID_PASSWORD,
+                'promoId' => null
+            ],
+        ];
+
+        return array_map(
+            static fn (array $item) => [json_encode($item, JSON_THROW_ON_ERROR)],
+            $data
+        );
+    }
+
+    /**
+     * @dataProvider requiredNullableCasesProvider
+     */
+    public function testRequiredNullableCases(string $json): void
+    {
+        $userSignUp = $this->serializer->deserialize(
+            $json,
+            UserSignUpDto::class,
+            'json'
+        );
+
+        $violations = $this->validator->validate($userSignUp);
+
+        $this->assertGreaterThan(0, $violations->count());
+    }
+
+    public function requiredNullableCasesProvider(): array
+    {
+        $data = [
+            [
                 'notificationTypeId' => Constant::NOTIFICATION_TYPE_SMS_ID,
                 'password' => self::VALID_PASSWORD,
                 'promoId' => null
             ],
             [
                 'notificationTypeId' => Constant::NOTIFICATION_TYPE_EMAIL_ID,
-                'password' => self::VALID_PASSWORD,
-                'promoId' => null
-            ],
-            [
-                'phone' => self::VALID_PHONE,
                 'password' => self::VALID_PASSWORD,
                 'promoId' => null
             ],
