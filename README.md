@@ -31,4 +31,15 @@ php bin/console lexik:jwt:generate-keypair
 #### Migrate db
 ```bash
 php bin/console doctrine:migrations:migrate
+php bin/console --env=test doctrine:migrations:migrate
+```
+
+### Tests
+```bash
+php bin/phpunit tests
+```
+
+### Run consumer
+```bash
+php bin/console messenger:consume
 ```
