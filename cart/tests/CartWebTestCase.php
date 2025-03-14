@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\DataFixtures\ProductFixtures;
 use App\DataFixtures\UserFixtures;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
@@ -11,7 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class UserWebTestCase extends WebTestCase
+class CartWebTestCase extends WebTestCase
 {
     protected ?KernelBrowser $client = null;
     protected ?EntityManagerInterface $entityManager = null;
@@ -24,7 +25,8 @@ class UserWebTestCase extends WebTestCase
         $this->client = static::createClient();
         $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
 
-        $this->loadFixtures([UserFixtures::class], ['constant']);
+        // todo: refactor it (move to FixturesWebTestCase)
+        $this->loadFixtures([UserFixtures::class, ProductFixtures::class], ['constant']);
     }
 
     protected function loadFixtures(array $fixtures, array $excludedTables = []): void

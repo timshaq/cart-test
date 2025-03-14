@@ -29,8 +29,10 @@ final class OrderControllerTest extends UserWebTestCase
 
     public function testAuthorized(): void
     {
-        $userRepository = $this->entityManager->getRepository(User::class);
-        $user = $userRepository->findOneBy(['email' => UserFixtures::USER_EMAIL]);
+        $user = $this->referenceRepository->getReference(
+            UserFixtures::REFERENCE_USER,
+            User::class
+        );
 
         $this->assertNotNull($user);
 

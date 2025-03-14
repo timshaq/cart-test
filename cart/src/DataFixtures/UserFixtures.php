@@ -10,7 +10,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class UserFixtures extends Fixture
 {
-    public const USER_EMAIL = 'tester@mail.com';
+    public const REFERENCE_USER = 'user';
     public function load(ObjectManager $manager): void
     {
         $userRepository = $manager->getRepository(User::class);
@@ -19,11 +19,13 @@ class UserFixtures extends Fixture
             '123456',
             null,
             null,
-            self::USER_EMAIL
+            'tester@mail.com'
         );
         $user = $userRepository->createUser($userSignUpDto);
 
         $manager->persist($user);
         $manager->flush();
+
+        $this->addReference(self::REFERENCE_USER, $user);
     }
 }
