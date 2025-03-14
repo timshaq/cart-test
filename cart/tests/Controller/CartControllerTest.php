@@ -5,13 +5,20 @@ namespace App\Tests\Controller;
 use App\DataFixtures\ProductFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Entity\CartItem;
+use App\Entity\Constant;
 use App\Entity\Product;
 use App\Entity\User;
-use App\Tests\CartWebTestCase;
+use App\Tests\WebTestCaseWithFixtures;
 use Symfony\Component\HttpFoundation\Response;
 
-final class CartControllerTest extends CartWebTestCase
+final class CartControllerTest extends WebTestCaseWithFixtures
 {
+    protected array $fixturesDependencies = [
+        UserFixtures::class,
+        ProductFixtures::class
+    ];
+    protected array $excludedTables = [Constant::TABLE_NAME];
+
     public function testUnauthorized(): void
     {
         $this->client->request('POST', '/cart/add/1');
@@ -88,10 +95,9 @@ final class CartControllerTest extends CartWebTestCase
 
         $this->client->loginUser($user);
 
-        $product = $this->referenceRepository->getReference(
-            ProductFixtures::REFERENCE_PRODUCT_1,
-            Product::class
-        );
+        $references = $this->referenceRepository->getReferencesByClass();
+        $products = $references[Product::class];
+        $product = $products[array_key_first($products)];
         $this->assertNotNull($product);
 
         $this->client->request('POST', sprintf('/cart/add/%d', $product->getId()));

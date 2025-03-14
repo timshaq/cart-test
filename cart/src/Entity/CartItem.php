@@ -21,7 +21,7 @@ class CartItem
     #[ORM\Column]
     private ?int $productId = null;
 
-    #[ORM\OneToOne(targetEntity: Product::class)]
+    #[ORM\ManyToOne(targetEntity: Product::class)]
     #[ORM\JoinColumn(name: 'product_id', referencedColumnName: 'id')]
     private Product $product;
 

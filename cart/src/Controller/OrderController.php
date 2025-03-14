@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\NewOrderDto;
+use App\Entity\Order;
 use App\Entity\User;
 use App\Event\OrderCreateEvent;
 use App\Repository\OrderRepository;
@@ -30,7 +31,7 @@ final class OrderController extends CommonController
             throw new BadRequestException('Cart is empty');
         }
 
-        if ($user->getCartItems()->count() > 20) {
+        if ($user->getCartItems()->count() > Order::CART_MAX_ITEMS) {
             throw new BadRequestException('Cart has too many products');
         }
 

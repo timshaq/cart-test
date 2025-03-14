@@ -13,6 +13,8 @@ use Symfony\Component\Serializer\Attribute\Ignore;
 #[ORM\Table(name: '`order`')]
 class Order
 {
+    public const CART_MAX_ITEMS = 20;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -42,13 +44,13 @@ class Order
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $kladrId = null;
 
     #[ORM\Column]
     private string $deliveryType;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?string $deliveryAddress = null;
 
     public function __construct()

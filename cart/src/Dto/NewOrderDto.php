@@ -2,7 +2,9 @@
 
 namespace App\Dto;
 
+use App\Entity\Constant;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 readonly class NewOrderDto
 {
@@ -10,8 +12,8 @@ readonly class NewOrderDto
         #[Assert\NotBlank]
         #[Assert\Choice(['selfdelivery', 'courier'])]
         private string  $deliveryType,
-        private ?string $deliveryAddress,
-        private ?int    $kladrId,
+        private ?string $deliveryAddress = null,
+        private ?int    $kladrId = null,
     )
     {
     }

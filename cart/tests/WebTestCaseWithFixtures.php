@@ -2,7 +2,6 @@
 
 namespace App\Tests;
 
-use App\DataFixtures\UserFixtures;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -11,11 +10,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class UserWebTestCase extends WebTestCase
+class WebTestCaseWithFixtures extends WebTestCase
 {
     protected ?KernelBrowser $client = null;
     protected ?EntityManagerInterface $entityManager = null;
     protected ?ReferenceRepository $referenceRepository = null;
+    protected array $fixturesDependencies = [];
+    protected array $excludedTables = [];
 
     protected function setUp(): void
     {
@@ -24,7 +25,8 @@ class UserWebTestCase extends WebTestCase
         $this->client = static::createClient();
         $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
 
-        $this->loadFixtures([UserFixtures::class], ['constant']);
+        // todo: refactor it (move to FixturesWebTestCase)
+        $this->loadFixtures($this->fixturesDependencies, $this->excludedTables);
     }
 
     protected function loadFixtures(array $fixtures, array $excludedTables = []): void
