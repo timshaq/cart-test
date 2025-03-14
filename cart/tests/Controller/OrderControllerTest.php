@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\DataFixtures\CartItemFixtures;
+use App\DataFixtures\OrderFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Entity\CartItem;
 use App\Entity\Constant;
@@ -16,7 +17,8 @@ final class OrderControllerTest extends WebTestCaseWithFixtures
 {
     protected array $fixturesDependencies = [
         UserFixtures::class,
-        CartItemFixtures::class
+        CartItemFixtures::class,
+        OrderFixtures::class
     ];
     protected array $excludedTables = [Constant::TABLE_NAME];
     // todo: refactor it (move to common method)
@@ -403,5 +405,38 @@ final class OrderControllerTest extends WebTestCaseWithFixtures
             'deliveryAddress' => 'Russia, Moscow',
             'kladrId' => 77
         ];
+    }
+
+    public function testUnauthorizedOrderStatus(): void
+    {
+        $user = $this->referenceRepository->getReference(
+            UserFixtures::REFERENCE_USER_WITH_ORDER,
+            User::class
+        );
+        $this->assertNotNull($user);
+
+        $this->assertEquals(1, $user->getOrders()->count());
+        $order = $user->getOrders()->first();
+
+        $this->client->request('GET', sprintf('/order/%d/status', $order->getId()));
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function testAuthorizedOrderStatus(): void
+    {
+        $user = $this->referenceRepository->getReference(
+            UserFixtures::REFERENCE_USER_WITH_ORDER,
+            User::class
+        );
+        $this->assertNotNull($user);
+
+        $this->assertEquals(1, $user->getOrders()->count());
+        $order = $user->getOrders()->first();
+
+        $this->client->loginUser($user);
+        $this->client->request('GET', sprintf('/order/%d/status', $order->getId()));
+
+        $this->assertResponseIsSuccessful();
     }
 }

@@ -13,6 +13,7 @@ class UserFixtures extends Fixture
     public const REFERENCE_USER = 'REFERENCE_USER';
     public const REFERENCE_USER_WITH_CART_ITEM = 'REFERENCE_USER_WITH_CART_ITEM';
     public const REFERENCE_USER_WITH_LARGE_CART = 'REFERENCE_USER_WITH_LARGE_CART';
+    public const REFERENCE_USER_WITH_ORDER = 'REFERENCE_USER_WITH_ORDER';
 
     private ?ObjectManager $manager = null;
 
@@ -22,6 +23,7 @@ class UserFixtures extends Fixture
         $this->loadUser();
         $this->loadUserWithCartItem();
         $this->loadUserWithLargeCart();
+        $this->loadUserWithOrder();
     }
 
     private function loadUser(): void
@@ -45,6 +47,14 @@ class UserFixtures extends Fixture
         $this->createUser(
             self::REFERENCE_USER_WITH_LARGE_CART,
             'user-with-large-cart@mail.com'
+        );
+    }
+
+    private function loadUserWithOrder(): void
+    {
+        $this->createUser(
+            self::REFERENCE_USER_WITH_ORDER,
+            'user-with-order@mail.com'
         );
     }
 
