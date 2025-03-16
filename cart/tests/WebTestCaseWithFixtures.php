@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Entity\Constant;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -16,7 +17,7 @@ class WebTestCaseWithFixtures extends WebTestCase
     protected ?EntityManagerInterface $entityManager = null;
     protected ?ReferenceRepository $referenceRepository = null;
     protected array $fixturesDependencies = [];
-    protected array $excludedTables = [];
+    protected array $excludedTables = [Constant::TABLE_NAME];
 
     protected function setUp(): void
     {

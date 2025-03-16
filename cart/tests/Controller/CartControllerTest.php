@@ -5,7 +5,6 @@ namespace App\Tests\Controller;
 use App\DataFixtures\ProductFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Entity\CartItem;
-use App\Entity\Constant;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Tests\WebTestCaseWithFixtures;
@@ -17,7 +16,6 @@ final class CartControllerTest extends WebTestCaseWithFixtures
         UserFixtures::class,
         ProductFixtures::class
     ];
-    protected array $excludedTables = [Constant::TABLE_NAME];
 
     public function testUnauthorized(): void
     {

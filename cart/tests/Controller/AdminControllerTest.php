@@ -18,7 +18,6 @@ final class AdminControllerTest extends WebTestCaseWithFixtures
         ProductFixtures::class,
         OrderFixtures::class
     ];
-    protected array $excludedTables = [Constant::TABLE_NAME];
 
     public function testUnauthorized(): void
     {

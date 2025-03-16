@@ -6,7 +6,6 @@ use App\DataFixtures\CartItemFixtures;
 use App\DataFixtures\OrderFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Entity\CartItem;
-use App\Entity\Constant;
 use App\Entity\Order;
 use App\Entity\OrderProduct;
 use App\Entity\User;
@@ -20,7 +19,7 @@ final class OrderControllerTest extends WebTestCaseWithFixtures
         CartItemFixtures::class,
         OrderFixtures::class
     ];
-    protected array $excludedTables = [Constant::TABLE_NAME];
+
     // todo: refactor it (move to common method)
     private const INVALID_PAGE_LIMIT_VALUES = [
         '',
