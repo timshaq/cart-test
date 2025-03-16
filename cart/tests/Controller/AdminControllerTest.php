@@ -22,10 +22,9 @@ final class AdminControllerTest extends WebTestCaseWithFixtures
 
     public function testUnauthorized(): void
     {
-        $client = static::createClient();
-        $client->request('GET', '/admin');
+        $this->client->request('POST', '/admin/order/1/status/100');
 
-        self::assertResponseIsSuccessful();
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testAuthorizedWithoutAdminRole(): void
