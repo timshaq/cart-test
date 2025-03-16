@@ -19,6 +19,9 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\Security\ApiKey\ApiKeyAuthenticator:
+        arguments:
+            $integrationSecretKey: '%secret.integration%'
     App\MessageSerializer\MessageSerializer:
         arguments:
             $serializer: '@serializer'

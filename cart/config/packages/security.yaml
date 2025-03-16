@@ -10,24 +10,28 @@ security:
             entity:
                 class: App\Entity\User
                 property: login
+        api_key_user_provider:
+            id: App\Security\ApiKey\ApiKeyUserProvider
     firewalls:
+        integration:
+            pattern: ^/api/integration/
+            stateless: true
+            provider: api_key_user_provider
+            custom_authenticators:
+                - App\Security\ApiKey\ApiKeyAuthenticator
         login:
             pattern: ^/sign-in
             stateless: true
+            provider: app_user_provider
             json_login:
                 check_path: /sign-in
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-        api:
-            pattern:   ^/
+        main:
+#            pattern: ^/
             stateless: true
             jwt: ~
-#        dev:
-#            pattern: ^/(_(profiler|wdt)|css|images|js)/
-#            security: false
-#        main:
-#            lazy: true
-#            provider: app_user_provider
+            provider: app_user_provider
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -38,12 +42,12 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        - { path: ^/api/integration, roles: ROLE_INTEGRATION }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/products, roles: PUBLIC_ACCESS }
         - { path: ^/sign-up, roles: PUBLIC_ACCESS }
         - { path: ^/sign-in, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
-#         - { path: ^/profile, roles: ROLE_USER }
 
 #when@test:
 #    security:
