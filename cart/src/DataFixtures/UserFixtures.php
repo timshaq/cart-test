@@ -14,6 +14,7 @@ class UserFixtures extends Fixture
     public const REFERENCE_USER_WITH_CART_ITEM = 'REFERENCE_USER_WITH_CART_ITEM';
     public const REFERENCE_USER_WITH_LARGE_CART = 'REFERENCE_USER_WITH_LARGE_CART';
     public const REFERENCE_USER_WITH_ORDER = 'REFERENCE_USER_WITH_ORDER';
+    public const REFERENCE_USER_WITH_ADMIN_ROLE = 'REFERENCE_USER_WITH_ADMIN_ROLE';
 
     private ?ObjectManager $manager = null;
 
@@ -24,6 +25,7 @@ class UserFixtures extends Fixture
         $this->loadUserWithCartItem();
         $this->loadUserWithLargeCart();
         $this->loadUserWithOrder();
+        $this->loadUserWithAdminRole();
     }
 
     private function loadUser(): void
@@ -58,7 +60,16 @@ class UserFixtures extends Fixture
         );
     }
 
-    private function createUser(string $reference, string $email)
+    private function loadUserWithAdminRole(): void
+    {
+        $this->createUser(
+            self::REFERENCE_USER_WITH_ADMIN_ROLE,
+            'user-with-admin-role@mail.com',
+            ['ROLE_ADMIN']
+        );
+    }
+
+    private function createUser(string $reference, string $email, array $roles = []): void
     {
         $userRepository = $this->manager->getRepository(User::class);
         $userSignUpDto = new UserSignUpDto(
@@ -68,7 +79,12 @@ class UserFixtures extends Fixture
             null,
             $email
         );
+        /** @var User $user */
         $user = $userRepository->createUser($userSignUpDto);
+
+        if ($roles) {
+            $user->setRoles($roles);
+        }
 
         $this->manager->persist($user);
         $this->manager->flush();

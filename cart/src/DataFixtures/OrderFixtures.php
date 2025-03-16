@@ -15,6 +15,8 @@ use Doctrine\Persistence\ObjectManager;
 
 class OrderFixtures extends Fixture
 {
+    public const REFERENCE_ORDER = 'REFERENCE_ORDER';
+
     public function load(ObjectManager $manager): void
     {
         $user = $this->getReference(
@@ -79,7 +81,7 @@ class OrderFixtures extends Fixture
         $manager->persist($product);
         $manager->flush();
 
-//        $this->addReference($reference, $user);
+        $this->addReference(self::REFERENCE_ORDER, $order);
     }
 
     public function getDependencies(): array

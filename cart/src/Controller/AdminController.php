@@ -9,7 +9,12 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class AdminController extends AbstractController
 {
-    #[Route('/admin/order/{orderId}/status/{statusId}', name: 'admin_order_status', methods: ['POST'])]
+    #[Route(
+        '/admin/order/{orderId}/status/{statusId}',
+        name: 'admin_order_status',
+        requirements: ['orderId' => '\d+', 'statusId' => '\d+'],
+        methods: ['POST']
+    )]
     public function setOrderStatus(
         int $orderId,
         int $statusId,
@@ -19,4 +24,6 @@ final class AdminController extends AbstractController
         $order = $adminService->setOrderStatus($orderId, $statusId);
         return $this->json($order);
     }
+
+    // todo: getOrders
 }

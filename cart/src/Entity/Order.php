@@ -20,12 +20,14 @@ class Order
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Ignore]
     #[ORM\Column]
     private ?int $userId = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private \DateTimeInterface $date;
 
+    #[Ignore]
     #[ORM\Column]
     private ?int $statusId = null;
 
