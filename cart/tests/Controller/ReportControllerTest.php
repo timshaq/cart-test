@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 use App\DataFixtures\UserFixtures;
 use App\Entity\User;
 use App\Tests\WebTestCaseWithFixtures;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ReportControllerTest extends WebTestCaseWithFixtures
@@ -56,14 +57,50 @@ final class ReportControllerTest extends WebTestCaseWithFixtures
 
         $this->assertResponseIsSuccessful();
     }
-    // todo: make
-//    public function testInvalidFrom(): void
-//    {
-//    }
-//    public function testInvalidTo(): void
-//    {
-//    }
-//    public function testGetFileReport(): void
-//    {
-//    }
+
+    public function testGetReportFile(): void
+    {
+        $projectDir = static::getContainer()->getParameter('kernel.project_dir');
+
+        $finder = new Finder();
+        $finder->in($projectDir . '/reports');
+        $this->assertTrue($finder->hasResults());
+
+        $reportId = null;
+        foreach ($finder as $file) {
+            $reportId = str_replace('.jsonl', '', $file->getFilename());
+            break;
+        }
+        $this->assertNotEmpty($reportId);
+
+        $apiKey = static::getContainer()->getParameter('secret.integration');
+        $this->client->setServerParameter('HTTP_api-key', $apiKey);
+
+        $this->client->request('GET','/api/integration/report/' . $reportId);
+
+        $this->assertResponseHeaderSame('Content-Type', 'application/x-ndjson');
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testGetReportFileWithUndefinedId(): void
+    {
+        $apiKey = static::getContainer()->getParameter('secret.integration');
+
+        $this->client->setServerParameter('HTTP_api-key', $apiKey);
+
+        $this->client->request('GET','/api/integration/report/asd');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function testGetReportFileWithEmptyId(): void
+    {
+        $apiKey = static::getContainer()->getParameter('secret.integration');
+
+        $this->client->setServerParameter('HTTP_api-key', $apiKey);
+
+        $this->client->request('GET','/api/integration/report/');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
 }
