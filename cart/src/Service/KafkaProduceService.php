@@ -7,6 +7,7 @@ use App\Entity\Order;
 use App\Entity\OrderProduct;
 use App\Entity\User;
 use App\Message\Produce\NewOrder\NewOrderMessage;
+use App\Message\Produce\NewReport\NewReportMessage;
 use App\Message\Produce\UserSignUpMessage;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -69,6 +70,34 @@ readonly class KafkaProduceService
 
         $messageData = json_encode($messageData, JSON_THROW_ON_ERROR);
         $message = $this->serializer->deserialize($messageData, NewOrderMessage::class, 'json');
+        $this->messageBus->dispatch($message);
+    }
+
+    /**
+     * @throws \JsonException
+     * @throws ExceptionInterface
+     */
+    public function sendNewReport(
+        string $reportId,
+        bool $success,
+        ?string $error = null,
+        ?string $message = null
+    ): void
+    {
+        $messageData = [
+            'reportId' => $reportId,
+            'result' => $success ? 'success' : 'fail',
+        ];
+
+        if ($error) {
+            $messageData['detail'] = [
+                'error' => $error,
+                'message' => $message
+            ];
+        }
+
+        $messageData = json_encode($messageData, JSON_THROW_ON_ERROR);
+        $message = $this->serializer->deserialize($messageData, NewReportMessage::class, 'json');
         $this->messageBus->dispatch($message);
     }
 }

@@ -32,6 +32,16 @@ framework:
                         name: 'new-orders'
                     kafka_conf:
                         security.protocol: 'plaintext'
+            new_report_producer:
+                dsn: '%env(KAFKA_URL)%'
+                serializer: App\MessageSerializer\NewReportSerializer
+                options:
+                    flushTimeout: 10000
+                    flushRetries: 5
+                    topic:
+                        name: 'new-reports'
+                    kafka_conf:
+                        security.protocol: 'plaintext'
             product_consumer:
                 dsn: '%env(KAFKA_URL)%'
                 serializer: App\MessageSerializer\ProductSerializer
@@ -72,6 +82,7 @@ framework:
             App\Message\Consume\UpdateOrderStatusMessage: order_status_consumer
             App\Message\Produce\UserSignUpMessage: user_sign_up_producer
             App\Message\Produce\NewOrder\NewOrderMessage: new_order_producer
+            App\Message\Produce\NewReport\NewReportMessage: new_report_producer
 
 # when@test:
 #    framework:

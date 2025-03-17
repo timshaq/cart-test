@@ -3,28 +3,34 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class ReportController extends AbstractController
 {
-    #[Route('/report/product', name: 'report_product')]
-    public function product(): JsonResponse
+    #[Route('/api/integration/report/orders/completed', name: 'report-orders-completed', methods: ['GET'])]
+    public function completedOrders(): Response
     {
-        // todo: make
-        /* produce to kafka
-{
-	"reportId": string, //"ebca4412-3965-45a8-bd36-4c1d1b768e7b"
-	"result": string // "success", "fail"
-	"detail": { // поле обязательно только в случае ошибки
-		"error": string,
-		"message": ?string
-	}
-}
-         */
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/ReportController.php',
-        ]);
+        $command = sprintf(
+            'nohup php %s %s > /dev/null 2>&1 &',
+            $this->getParameter('kernel.project_dir') . '/bin/console',
+            'app:generate-report'
+        );
+        exec($command);
+
+        return new Response();
     }
+
+    // todo:
+//    #[Route('/api/integration/report/{id}', name: 'report-orders-completed', methods: ['GET'])]
+//    public function completedOrders(
+//        Request $request,
+//        ReportService $reportService,
+//    ): Response
+//    {
+//
+//        return $this->json($reportService->getReport());
+//
+//        return new Response();
+//    }
 }

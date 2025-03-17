@@ -37,6 +37,9 @@ services:
     App\MessageSerializer\NewOrderSerializer:
         arguments:
             $serializer: '@serializer'
+    App\MessageSerializer\NewReportSerializer:
+        arguments:
+            $serializer: '@serializer'
     App\Service\OrderService:
         arguments:
             $entityManager: '@doctrine.orm.entity_manager'
