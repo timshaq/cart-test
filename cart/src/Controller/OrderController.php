@@ -5,10 +5,11 @@ namespace App\Controller;
 use App\Dto\NewOrderDto;
 use App\Entity\Order;
 use App\Entity\User;
-use App\Event\OrderCreateEvent;
 use App\Repository\OrderRepository;
+use App\Service\KafkaProduceService;
 use App\Service\OrderService;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,8 @@ final class OrderController extends CommonController
     public function create(
         #[MapRequestPayload] NewOrderDto $newOrderDto,
         OrderService $orderService,
-        EventDispatcherInterface $eventDispatcher,
+        KafkaProduceService $kafkaProduceService,
+        EntityManagerInterface $entityManager
     ): Response
     {
         /** @var User $user */
@@ -35,10 +37,24 @@ final class OrderController extends CommonController
             throw new BadRequestException('Cart has too many products');
         }
 
+        $entityManager->beginTransaction();
         try {
             $order = $orderService->createOrder($user, $newOrderDto);
-            $eventDispatcher->dispatch(new OrderCreateEvent($order), 'order.create');
+            $entityManager->persist($order);
+
+            foreach ($user->getCartItems() as $cartItem) {
+                $entityManager->remove($cartItem);
+            }
+
+            $user->setCartItems(new ArrayCollection());
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $kafkaProduceService->sendNewOrder($order);
+
+            $entityManager->commit();
         } catch (\Throwable) {
+            $entityManager->rollback();
             throw new \RuntimeException('Can\'t create order');
         }
 

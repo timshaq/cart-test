@@ -9,6 +9,7 @@ use App\Entity\CartItem;
 use App\Entity\Order;
 use App\Entity\OrderProduct;
 use App\Entity\User;
+use App\Repository\CartItemRepository;
 use App\Tests\WebTestCaseWithFixtures;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,18 +21,18 @@ final class OrderControllerTest extends WebTestCaseWithFixtures
         OrderFixtures::class
     ];
 
-    // todo: refactor it (move to common method)
-    private const INVALID_PAGE_LIMIT_VALUES = [
-        '',
-        'aaa',
-        '0',
-        '-1',
-        'null',
-        'true',
-        '[]',
-        '{}'
-    ];
-
+//    // todo: refactor it (move to common method)
+//    private const INVALID_PAGE_LIMIT_VALUES = [
+//        '',
+//        'aaa',
+//        '0',
+//        '-1',
+//        'null',
+//        'true',
+//        '[]',
+//        '{}'
+//    ];
+//
     public function testUnauthorizedOrderList(): void
     {
         $this->client->request('GET', '/orders');
@@ -112,6 +113,8 @@ final class OrderControllerTest extends WebTestCaseWithFixtures
         $this->assertEquals(1, $user->getCartItems()->count());
         /** @var CartItem $cartItem */
         $cartItem = $user->getCartItems()->first();
+        $cartItemId = $cartItem->getId();
+        $cartItemProductId = $cartItem->getProduct()->getId();
 
         $this->client->loginUser($user);
         $this->client->request('POST', '/order', self::getValidOrderCreatePayload());
@@ -121,7 +124,13 @@ final class OrderControllerTest extends WebTestCaseWithFixtures
         $order = $user->getOrders()->first();
         /** @var OrderProduct $orderProduct */
         $orderProduct = $order->getProducts()->first();
-        $this->assertTrue($orderProduct->getProductId() === $cartItem->getProduct()->getId());
+        $this->assertTrue($orderProduct->getProductId() === $cartItemProductId);
+
+        $this->assertSame(0, $user->getCartItems()->count());
+
+        /** @var CartItemRepository $cartItemRepository */
+        $cartItemRepository = static::getContainer()->get(CartItemRepository::class);
+        $this->assertNull($cartItemRepository->find($cartItemId));
     }
 
     public function testAuthorizedCreateOrderWithSelfDeliveryDeliveryType(): void
