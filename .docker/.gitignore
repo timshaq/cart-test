@@ -2,3 +2,6 @@ cart/var/log/**/*
 !cart/var/log/.gitkeep
 cart/etc/nginx/nginx.conf
 cart/etc/php/www.conf
+
+services/**/var/log/**/*
+!services/**/.gitkeep
