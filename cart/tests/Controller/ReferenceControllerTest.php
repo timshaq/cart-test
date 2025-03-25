@@ -33,9 +33,4 @@ final class ReferenceControllerTest extends WebTestCaseWithFixtures
 
         $this->assertResponseIsSuccessful();
     }
-
-//    public function testGetOrderStatusAuthorizedWithApiKey(): void
-//    {
-//        // todo: write
-//    }
 }

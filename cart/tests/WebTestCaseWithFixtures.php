@@ -26,7 +26,6 @@ class WebTestCaseWithFixtures extends WebTestCase
         $this->client = static::createClient();
         $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
 
-        // todo: refactor it (move to FixturesWebTestCase)
         $this->loadFixtures($this->fixturesDependencies, $this->excludedTables);
     }
 

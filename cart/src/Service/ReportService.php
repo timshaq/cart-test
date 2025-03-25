@@ -44,7 +44,6 @@ readonly class ReportService
 
         $orders = $qb->fetchAllAssociative();
 
-        // todo: create jsonl encoder
         $filePath = sprintf(
             $this->kernel->getProjectDir() . '/reports/%s.jsonl',
             $id

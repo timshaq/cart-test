@@ -24,6 +24,4 @@ final class AdminController extends AbstractController
         $order = $adminService->setOrderStatus($orderId, $statusId);
         return $this->json($order);
     }
-
-    // todo: getOrders
 }

@@ -8,11 +8,11 @@ use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
-class AdminService
+readonly class AdminService
 {
     public function __construct(
-        private OrderRepository $orderRepository,
-        private ConstantRepository $constantRepository,
+        private OrderRepository        $orderRepository,
+        private ConstantRepository     $constantRepository,
         private EntityManagerInterface $entityManager
     )
     {

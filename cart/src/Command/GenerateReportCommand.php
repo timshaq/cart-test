@@ -14,7 +14,7 @@ use Throwable;
 
 #[AsCommand(
     name: 'app:generate-report',
-    description: 'Add a short description for your command',
+    description: 'Generate report file',
 )]
 class GenerateReportCommand extends Command
 {

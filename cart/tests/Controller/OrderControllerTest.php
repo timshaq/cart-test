@@ -21,18 +21,6 @@ final class OrderControllerTest extends WebTestCaseWithFixtures
         OrderFixtures::class
     ];
 
-//    // todo: refactor it (move to common method)
-//    private const INVALID_PAGE_LIMIT_VALUES = [
-//        '',
-//        'aaa',
-//        '0',
-//        '-1',
-//        'null',
-//        'true',
-//        '[]',
-//        '{}'
-//    ];
-//
     public function testUnauthorizedOrderList(): void
     {
         $this->client->request('GET', '/orders');
@@ -53,43 +41,6 @@ final class OrderControllerTest extends WebTestCaseWithFixtures
 
         $this->assertResponseIsSuccessful();
     }
-
-    // todo: fix multiple requests
-//    public function testInvalidPageQueryParameter(): void
-//    {
-//        $userRepository = $this->entityManager->getRepository(User::class);
-//        $user = $userRepository->findOneBy(['email' => UserFixtures::USER_EMAIL]);
-//
-//        $this->assertNotNull($user);
-//        $this->client->loginUser($user);
-//
-//        foreach (self::INVALID_PAGE_LIMIT_VALUES as $value) {
-//            $this->client->request(
-//                'GET',
-//                sprintf('/orders?page=%s&limit=1000', $value)
-//            );
-//            self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
-//        }
-//    }
-
-//    public function testInvalidLimitQueryParameter(): void
-//    {
-//        // todo: refactor it (move to method)
-//        $userRepository = $this->entityManager->getRepository(User::class);
-//        $user = $userRepository->findOneBy(['email' => UserFixtures::USER_EMAIL]);
-//
-//        $this->assertNotNull($user);
-//
-//        $this->client->loginUser($user);
-//
-//        foreach (self::INVALID_PAGE_LIMIT_VALUES as $value) {
-//            $this->client->request(
-//                'GET',
-//                sprintf('/orders?page=1&limit=%s', $value)
-//            );
-//            self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
-//        }
-//    }
 
     public function testUnauthorizedCreateOrder(): void
     {
