@@ -46,8 +46,8 @@ class Order
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $kladrId = null;
+    #[ORM\Column(nullable: true, length: 2)]
+    private ?string $kladrId = null;
 
     #[ORM\Column]
     private string $deliveryType;
@@ -113,7 +113,7 @@ class Order
         $this->status = $status;
     }
 
-    public function getKladrId(): ?int
+    public function getKladrId(): ?string
     {
         return $this->kladrId;
     }
@@ -128,7 +128,7 @@ class Order
         return $this->deliveryAddress;
     }
 
-    public function setKladrId(?int $kladrId): void
+    public function setKladrId(?string $kladrId): void
     {
         $this->kladrId = $kladrId;
     }

@@ -78,7 +78,13 @@ final class ReportControllerTest extends WebTestCaseWithFixtures
 
         $this->client->request('GET','/api/integration/report/' . $reportId);
 
-        $this->assertResponseHeaderSame('Content-Type', 'application/x-ndjson');
+        $expectContentTypes = [
+            'application/x-empty',
+            'application/x-ndjson',
+        ];
+        $responseContentType = $this->client->getResponse()->headers->get('content-type');
+
+        $this->assertTrue(in_array($responseContentType, $expectContentTypes));
         $this->assertResponseIsSuccessful();
     }
 

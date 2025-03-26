@@ -11,7 +11,8 @@ readonly class NewOrderDto
         #[Assert\Choice(['selfdelivery', 'courier'])]
         private string  $deliveryType,
         private ?string $deliveryAddress = null,
-        private ?int    $kladrId = null,
+        #[Assert\AtLeastOneOf([new Assert\Regex('/^\d{2}$/'), new Assert\IsNull()])]
+        private ?string $kladrId = null,
     )
     {
     }
@@ -26,7 +27,7 @@ readonly class NewOrderDto
         return $this->deliveryAddress;
     }
 
-    public function getKladrId(): ?int
+    public function getKladrId(): ?string
     {
         return $this->kladrId;
     }
