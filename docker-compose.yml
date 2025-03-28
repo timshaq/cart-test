@@ -13,6 +13,8 @@ services:
       - ./.docker/cart/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./.docker/cart/var/log:/var/log/nginx
     restart: unless-stopped
+    env_file:
+      - ./.env
 
   cart-database:
     image: mysql:8.0
@@ -52,6 +54,8 @@ services:
       - ./.docker/cart/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./.docker/services/delivery/var/log:/var/log/nginx
     restart: unless-stopped
+    env_file:
+      - ./.env
 
   notification-service:
     container_name: notification-service
@@ -65,6 +69,8 @@ services:
       - ./.docker/cart/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./.docker/services/notification/var/log:/var/log/nginx
     restart: unless-stopped
+    env_file:
+      - ./.env
 
   product-service:
     container_name: product-service
@@ -78,6 +84,8 @@ services:
       - ./.docker/cart/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./.docker/services/product/var/log:/var/log/nginx
     restart: unless-stopped
+    env_file:
+      - ./.env
 
   statistics-service:
     container_name: statistics-service
@@ -91,6 +99,8 @@ services:
       - ./.docker/cart/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./.docker/services/statistics/var/log:/var/log/nginx
     restart: unless-stopped
+    env_file:
+      - ./.env
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.8.0

@@ -13,33 +13,26 @@ docker compose build
 docker compose up -d
 ```
 
-### Enter in container bash
+### Create jwt keys
 ```bash
 docker exec -it cart bash
 ```
-
-#### Install packages
-```bash
-composer install
-```
-
-#### Create jwt keys
 ```bash
 php bin/console lexik:jwt:generate-keypair
 ```
 
-#### Migrate db
+### Set similar ENV and APP_ENVs and run build
 ```bash
-php bin/console doctrine:migrations:migrate
-php bin/console --env=test doctrine:migrations:migrate
+bin/build
 ```
 
-### Tests
+
+## Tests
 ```bash
 php bin/phpunit tests
 ```
 
-### Run consumer
+## Run consumer
 ```bash
 php bin/console messenger:consume
 ```
