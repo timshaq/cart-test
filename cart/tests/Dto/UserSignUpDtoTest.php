@@ -43,7 +43,6 @@ final class UserSignUpDtoTest extends KernelTestCase
 
     public function positiveCasesProvider(): array
     {
-        // todo: more data
         $data = [
             [
                 'notificationTypeId' => Constant::NOTIFICATION_TYPE_SMS_ID,

@@ -14,7 +14,6 @@ final class ReportController extends AbstractController
     #[Route('/api/integration/report/orders/completed', name: 'report-orders-completed', methods: ['GET'])]
     public function completedOrders(): Response
     {
-        // todo: when@test
         $command = sprintf(
             'nohup php %s %s > /dev/null 2>&1 &',
             $this->getParameter('kernel.project_dir') . '/bin/console',

@@ -36,7 +36,7 @@ class OrderProduct
     #[ORM\JoinColumn(name: 'measurement_id', referencedColumnName: 'id')]
     private ProductMeasurement $measurement;
 
-    #[Ignore] // todo: check https://symfony.com/doc/current/serializer.html#handling-circular-references
+    #[Ignore]
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
     private Order $order;

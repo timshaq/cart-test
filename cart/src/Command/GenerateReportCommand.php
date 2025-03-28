@@ -45,13 +45,6 @@ class GenerateReportCommand extends Command
         } catch (Throwable $e) {
             $success = false;
             $error = $e->getMessage();
-            dump([
-               'trace' => $e->getTrace(),
-               'message' => $e->getMessage(),
-               'file' => $e->getFile(),
-               'line' => $e->getLine()
-            ]);
-            // todo: logging
         }
 
         $this->kafkaProduceService->sendNewReport($reportId, $success, $error);

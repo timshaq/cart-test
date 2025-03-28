@@ -35,7 +35,6 @@ class ProductRepository extends ServiceEntityRepository
             $product->setTax($messageProduct->getTax());
             $product->setVersion($messageProduct->getVersion());
 
-            // todo: split the logic
             $product->getMeasurement()->setHeight($messageProduct->getMeasurements()->getHeight());
             $product->getMeasurement()->setLength($messageProduct->getMeasurements()->getLength());
             $product->getMeasurement()->setWeight($messageProduct->getMeasurements()->getWeight());

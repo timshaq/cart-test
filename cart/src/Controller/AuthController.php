@@ -37,6 +37,4 @@ final class AuthController extends CommonController
 
         return new Response();
     }
-
-    // todo: logout (tokens black list)
 }

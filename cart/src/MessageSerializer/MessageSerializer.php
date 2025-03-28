@@ -5,23 +5,35 @@ namespace App\MessageSerializer;
 use App\Message\Message;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
+use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Serializer\Serializer;
+use Throwable;
 
 class MessageSerializer implements SerializerInterface
 {
     protected string $deserializeType = Message::class;
 
-    public function __construct(protected Serializer $serializer)
+    public function __construct(protected Serializer $serializer, private NotifierInterface $notifier)
     {
     }
 
     public function decode(array $encodedEnvelope): Envelope
     {
-        // todo: handle Throwable
-        $product = $this->serializer->deserialize($encodedEnvelope['body'], $this->deserializeType, 'json');
-        $product->setMessageData($encodedEnvelope);
-
-        return new Envelope($product);
+        try {
+            $product = $this->serializer->deserialize($encodedEnvelope['body'], $this->deserializeType, 'json');
+            $product->setMessageData($encodedEnvelope);
+            return new Envelope($product);
+        } catch (Throwable $throwable) {
+            $message = sprintf(
+                "Consumer decode error \(%s\).\n\nError:\n%s",
+                str_replace("\\", '/', $this->deserializeType),
+                $throwable->getMessage(),
+            );
+            $notification = (new Notification($message));
+            $this->notifier->send($notification);
+            throw $throwable;
+        }
     }
 
     public function encode(Envelope $envelope): array

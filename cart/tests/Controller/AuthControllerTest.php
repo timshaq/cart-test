@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class AuthControllerTest extends WebTestCase
 {
-    // todo: kafka warnings
     protected ?KernelBrowser $client = null;
     protected ?EntityManagerInterface $entityManager = null;
 

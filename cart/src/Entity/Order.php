@@ -41,7 +41,7 @@ class Order
     #[ORM\OneToMany(targetEntity: OrderProduct::class, mappedBy: 'order', cascade: ['persist', 'remove'])]
     private Collection $products;
 
-    #[Ignore] // todo: check https://symfony.com/doc/current/serializer.html#handling-circular-references
+    #[Ignore]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;

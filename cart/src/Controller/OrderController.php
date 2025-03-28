@@ -74,7 +74,7 @@ final class OrderController extends CommonController
             throw new AccessDeniedException('Order not found');
         }
 
-        return $this->json($order->getStatus()); // todo: serialize?
+        return $this->json($order->getStatus());
     }
 
     #[Route('/orders', name: 'orders', methods: ['GET'])]

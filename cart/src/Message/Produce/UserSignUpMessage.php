@@ -7,7 +7,7 @@ use App\Message\Message;
 
 final class UserSignUpMessage extends Message
 {
-    // todo: serialize callback for dynamic create $userPhone or $userEmail
+    // todo: only $userPhone or $userEmail
     public function __construct(
         private readonly string  $type,
         private readonly ?string $userPhone = null,
