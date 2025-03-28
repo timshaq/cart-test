@@ -175,7 +175,6 @@ final class AuthControllerTest extends WebTestCase
 
     public function testNullEmail(): void
     {
-        // todo : add this case to dto test
         $this->client->request(
             'POST',
             '/sign-up',
@@ -192,7 +191,6 @@ final class AuthControllerTest extends WebTestCase
 
     public function testEmptyEmail(): void
     {
-        // todo : add this case to dto test
         $this->client->request(
             'POST',
             '/sign-up',
