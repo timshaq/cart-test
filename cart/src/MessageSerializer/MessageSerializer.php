@@ -7,6 +7,7 @@ use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\NotifierInterface;
+use Symfony\Component\Notifier\Recipient\Recipient;
 use Symfony\Component\Serializer\Serializer;
 use Throwable;
 
@@ -26,9 +27,10 @@ class MessageSerializer implements SerializerInterface
             return new Envelope($product);
         } catch (Throwable $throwable) {
             $message = sprintf(
-                "Consumer decode error \(%s\).\n\nError:\n%s",
+                "Consumer error \(%s\).\n\nError:\n%s\n\nKafka Message:\n%s",
                 str_replace("\\", '/', $this->deserializeType),
                 $throwable->getMessage(),
+                json_encode($encodedEnvelope, JSON_THROW_ON_ERROR)
             );
             $notification = (new Notification($message));
             $this->notifier->send($notification);
