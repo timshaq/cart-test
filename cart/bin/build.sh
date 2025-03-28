@@ -14,10 +14,9 @@ if [ "$ENV" = 'prod' ]; then
 
   sh -c "$COMPOSER_COMMAND --no-interaction --no-dev --optimize-autoloader";
 
-  # todo: run consumers
-#  for CONSUMER in "${CONSUMERS[@]}"; do
-#    sh -c "nohup php bin/console messenger:consume $CONSUMER --no-interaction &"
-#  done
+  for CONSUMER in "${CONSUMERS[@]}"; do
+    sh -c "nohup php bin/console messenger:consume $CONSUMER --no-interaction &"
+  done
 
 else
   sh -c "$COMPOSER_COMMAND --no-interaction";
