@@ -30,6 +30,7 @@ class PlugController extends AbstractController
 
         foreach ($productMessages as $productMessage) {
             $messageBus->dispatch($productMessage);
+            sleep(1/10);
         }
 
         return $this->json($productMessages);

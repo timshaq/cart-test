@@ -2,7 +2,8 @@
 
 namespace App\MessageSerializer;
 
-use App\Message\Consume\Product\ProductMessage;
+
+use App\Message\Produce\Product\ProductMessage;
 
 final class ProductSerializer extends MessageSerializer
 {

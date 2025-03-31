@@ -36,3 +36,10 @@ php bin/phpunit tests
 ```bash
 php bin/console messenger:consume
 ```
+
+
+## Product Service
+set last generated product id
+```
+services/product/var/lastProductId
+```
