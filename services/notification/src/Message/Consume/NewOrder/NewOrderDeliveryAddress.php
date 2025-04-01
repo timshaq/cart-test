@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Message\Produce\NewOrder;
+namespace App\Message\Consume\NewOrder;
 
 
 final class NewOrderDeliveryAddress
