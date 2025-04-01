@@ -19,6 +19,9 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\MessageSerializer\MessageSerializer:
+        arguments:
+            $serializer: '@serializer'
+    App\MessageSerializer\NewReportSerializer:
+        arguments:
+            $serializer: '@serializer'

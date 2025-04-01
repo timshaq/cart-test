@@ -1,4 +1,6 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
+parameters:
+    api.key.cart: '%env(trim:string:API_KEY_CART_SERVICE)%'
 framework:
     secret: '%env(APP_SECRET)%'
 
