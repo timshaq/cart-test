@@ -4,37 +4,14 @@ namespace App\Service;
 
 use App\Dto\NewOrderDto;
 use App\Entity\CartItem;
-use App\Entity\Constant;
 use App\Entity\Order;
 use App\Entity\OrderProduct;
 use App\Entity\User;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Exception\ORMException;
 
 readonly class OrderService
 {
-    public function __construct(
-        private EntityManagerInterface $entityManager
-    )
-    {
-    }
-
-    private function getEntityManager(): EntityManagerInterface
-    {
-        return $this->entityManager;
-    }
-
-    /**
-     * @throws ORMException
-     */
     public function createOrder(User $user, NewOrderDto $newOrderDto): Order
     {
-        $paidOrderStatus = $this->getEntityManager()->getReference(
-            Constant::class,
-            Constant::ORDER_STATUS_PAID_ID
-        );
-
         $order = new Order();
         $orderCost = 0;
         foreach ($user->getCartItems() as $cartItem) {
@@ -54,7 +31,7 @@ readonly class OrderService
             $order->getProducts()->add($orderProduct);
         }
 
-        $order->setStatus($paidOrderStatus);
+        $order->setStatus('оплачен и ждёт сборки');
         $order->setCost($orderCost);
         $order->setUser($user);
         $order->setDeliveryType($newOrderDto->getDeliveryType());

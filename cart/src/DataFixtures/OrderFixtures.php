@@ -41,11 +41,6 @@ class OrderFixtures extends Fixture
 
         $newOrderDto = new NewOrderDto('courier');
 
-        $paidOrderStatus = $manager->getReference(
-            Constant::class,
-            Constant::ORDER_STATUS_PAID_ID
-        );
-
         $order = new Order();
         $orderCost = 0;
         foreach ($user->getCartItems() as $cartItem) {
@@ -66,7 +61,7 @@ class OrderFixtures extends Fixture
             $manager->persist($orderProduct);
         }
 
-        $order->setStatus($paidOrderStatus);
+        $order->setStatus('оплачен и ждёт сборки');
         $order->setCost($orderCost);
         $order->setUser($user);
         $order->setDeliveryType($newOrderDto->getDeliveryType());

@@ -27,13 +27,8 @@ class Order
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private \DateTimeInterface $date;
 
-    #[Ignore]
     #[ORM\Column]
-    private ?int $statusId = null;
-
-    #[ORM\ManyToOne(targetEntity: Constant::class)]
-    #[ORM\JoinColumn(name: 'status_id', referencedColumnName: 'id')]
-    private ?Constant $status = null;
+    private string $status;
 
     #[ORM\Column]
     private ?int $cost = null;
@@ -103,12 +98,12 @@ class Order
         return $this->date;
     }
 
-    public function getStatus(): ?Constant
+    public function getStatus(): string
     {
         return $this->status;
     }
 
-    public function setStatus(?Constant $status): void
+    public function setStatus(string $status): void
     {
         $this->status = $status;
     }

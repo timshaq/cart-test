@@ -14,6 +14,6 @@ final readonly class UpdateOrderStatusHandler
     }
     public function __invoke(UpdateOrderStatusMessage $message): void
     {
-        $this->adminService->setOrderStatus($message->getOrderId(), $message->getStatusId());
+        $this->adminService->setOrderStatus($message->getOrderId(), $message->getStatus());
     }
 }

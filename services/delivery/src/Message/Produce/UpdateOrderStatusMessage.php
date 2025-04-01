@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Message\Consume;
+namespace App\Message\Produce;
 
 
 use App\Message\Message;
@@ -8,7 +8,7 @@ use App\Message\Message;
 final class UpdateOrderStatusMessage extends Message
 {
     public function __construct(
-        private readonly int    $orderId,
+        private readonly int $orderId,
         private readonly string $status,
     )
     {

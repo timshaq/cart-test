@@ -1,29 +1,32 @@
 framework:
     messenger:
-        failure_transport: failed
-
         transports:
-            # https://symfony.com/doc/current/messenger.html#transport-configuration
-            async:
-                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+            new_order_consumer:
+                dsn: '%env(KAFKA_URL)%'
+                serializer: App\MessageSerializer\UpdateOrderStatusSerializer
                 options:
-                    use_notify: true
-                    check_delayed_interval: 60000
-                retry_strategy:
-                    max_retries: 3
-                    multiplier: 2
-            failed: 'doctrine://default?queue_name=failed'
-            # sync: 'sync://'
-
-        default_bus: messenger.bus.default
-
-        buses:
-            messenger.bus.default: []
+                    commitAsync: true
+                    receiveTimeout: 10000
+                    topic:
+                        name: 'order-status'
+                    kafka_conf:
+                        enable.auto.offset.store: 'false'
+                        group.id: 'group-delivery-order-status' # should be unique per consumer
+                        security.protocol: 'plaintext'
+                        max.poll.interval.ms: '45000'
+                    topic_conf:
+                        auto.offset.reset: 'earliest'
+            order_status_producer:
+                dsn: '%env(KAFKA_URL)%'
+                serializer: App\MessageSerializer\NewOrderSerializer
+                options:
+                    flushTimeout: 10000
+                    flushRetries: 5
+                    topic:
+                        name: 'new-orders'
+                    kafka_conf:
+                        security.protocol: 'plaintext'
 
         routing:
-            Symfony\Component\Mailer\Messenger\SendEmailMessage: async
-            Symfony\Component\Notifier\Message\ChatMessage: async
-            Symfony\Component\Notifier\Message\SmsMessage: async
-
-            # Route your messages to the transports
-            # 'App\Message\YourMessage': async
+            App\Message\Produce\UpdateOrderStatusMessage: order_status_producer
+            App\Message\Consume\NewOrder\NewOrderMessage: new_order_consumer

@@ -5,7 +5,6 @@ namespace App\Tests\Controller;
 use App\DataFixtures\OrderFixtures;
 use App\DataFixtures\ProductFixtures;
 use App\DataFixtures\UserFixtures;
-use App\Entity\Constant;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Tests\WebTestCaseWithFixtures;
@@ -19,9 +18,13 @@ final class AdminControllerTest extends WebTestCaseWithFixtures
         OrderFixtures::class
     ];
 
+    private const STATUS = 'AdminControllerTest';
+
     public function testUnauthorized(): void
     {
-        $this->client->request('POST', '/admin/order/1/status/100');
+        $this->client->request('POST', '/admin/order/1/status', [
+            'status' => self::STATUS,
+        ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
@@ -43,11 +46,8 @@ final class AdminControllerTest extends WebTestCaseWithFixtures
         $this->client->loginUser($user);
         $this->client->request(
             'POST',
-            sprintf(
-                '/admin/order/%d/status/%d',
-                $order->getId(),
-                Constant::ORDER_STATUS_PAID_ID
-            )
+            sprintf('/admin/order/%d/status', $order->getId()),
+            ['status' => self::STATUS]
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -70,14 +70,13 @@ final class AdminControllerTest extends WebTestCaseWithFixtures
         $this->client->loginUser($user);
         $this->client->request(
             'POST',
-            sprintf(
-                '/admin/order/%d/status/%d',
-                $order->getId(),
-                Constant::ORDER_STATUS_PAID_ID
-            )
+            sprintf('/admin/order/%d/status', $order->getId()),
+            ['status' => self::STATUS]
         );
 
         $this->assertResponseIsSuccessful();
+
+        $this->assertTrue($order->getStatus() === self::STATUS);
     }
 
     public function testUndefinedOrder(): void
@@ -91,10 +90,8 @@ final class AdminControllerTest extends WebTestCaseWithFixtures
         $this->client->loginUser($user);
         $this->client->request(
             'POST',
-            sprintf(
-                '/admin/order/0/status/%d',
-                Constant::ORDER_STATUS_PAID_ID
-            )
+            sprintf('/admin/order/0/status'),
+            ['status' => self::STATUS]
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
@@ -105,7 +102,7 @@ final class AdminControllerTest extends WebTestCaseWithFixtures
 
         $this->requestForTestQueryParameters(
             '',
-            Constant::ORDER_STATUS_PAID_ID
+            self::STATUS,
         );
     }
 
@@ -113,7 +110,7 @@ final class AdminControllerTest extends WebTestCaseWithFixtures
     {
         $this->requestForTestQueryParameters(
             'null',
-            Constant::ORDER_STATUS_PAID_ID
+            self::STATUS
         );
     }
 
@@ -121,7 +118,7 @@ final class AdminControllerTest extends WebTestCaseWithFixtures
     {
         $this->requestForTestQueryParameters(
             'false',
-            Constant::ORDER_STATUS_PAID_ID
+            self::STATUS
         );
     }
 
@@ -129,22 +126,7 @@ final class AdminControllerTest extends WebTestCaseWithFixtures
     {
         $this->requestForTestQueryParameters(
             '[]',
-            Constant::ORDER_STATUS_PAID_ID
-        );
-    }
-
-    public function testUndefinedStatus(): void
-    {
-        $order = $this->referenceRepository->getReference(
-            OrderFixtures::REFERENCE_ORDER,
-            Order::class
-        );
-        $this->assertNotNull($order);
-
-        $this->requestForTestQueryParameters(
-            $order->getId(),
-            '0',
-            Response::HTTP_BAD_REQUEST
+            self::STATUS
         );
     }
 
@@ -156,46 +138,13 @@ final class AdminControllerTest extends WebTestCaseWithFixtures
         );
         $this->assertNotNull($order);
 
-        $this->requestForTestQueryParameters($order->getId(), '');
-    }
-
-    public function testStatusNullQueryParameter(): void
-    {
-        $order = $this->referenceRepository->getReference(
-            OrderFixtures::REFERENCE_ORDER,
-            Order::class
-        );
-        $this->assertNotNull($order);
-
-        $this->requestForTestQueryParameters($order->getId(), 'null');
-    }
-
-    public function testStatusBoolQueryParameter(): void
-    {
-        $order = $this->referenceRepository->getReference(
-            OrderFixtures::REFERENCE_ORDER,
-            Order::class
-        );
-        $this->assertNotNull($order);
-
-        $this->requestForTestQueryParameters($order->getId(), 'true');
-    }
-
-    public function testStatusJsonQueryParameter(): void
-    {
-        $order = $this->referenceRepository->getReference(
-            OrderFixtures::REFERENCE_ORDER,
-            Order::class
-        );
-        $this->assertNotNull($order);
-
-        $this->requestForTestQueryParameters($order->getId(), '[]');
+        $this->requestForTestQueryParameters($order->getId(), '', Response::HTTP_BAD_REQUEST);
     }
 
     private function requestForTestQueryParameters(
         mixed $orderId = null,
-        mixed $statusId = null,
-        int $assertResponseStatusCode = Response::HTTP_NOT_FOUND
+        mixed $status = null,
+        int   $assertResponseStatusCode = Response::HTTP_NOT_FOUND
     ): void
     {
         $user = $this->referenceRepository->getReference(
@@ -207,11 +156,9 @@ final class AdminControllerTest extends WebTestCaseWithFixtures
         $this->client->loginUser($user);
         $this->client->request(
             'POST',
-            sprintf(
-                '/admin/order/%s/status/%s',
-                $orderId,
-                $statusId
-            )
+            sprintf('/admin/order/%s/status', $orderId), [
+                'status' => $status,
+            ]
         );
 
         $this->assertResponseStatusCodeSame($assertResponseStatusCode);
