@@ -5,13 +5,13 @@ namespace App\MessageSerializer;
 use App\Message\Message;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 class MessageSerializer implements SerializerInterface
 {
     protected string $deserializeType = Message::class;
 
-    public function __construct(protected Serializer $serializer)
+    public function __construct(protected DenormalizerInterface $serializer)
     {
     }
 

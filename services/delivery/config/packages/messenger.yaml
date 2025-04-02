@@ -3,12 +3,12 @@ framework:
         transports:
             new_order_consumer:
                 dsn: '%env(KAFKA_URL)%'
-                serializer: App\MessageSerializer\UpdateOrderStatusSerializer
+                serializer: App\MessageSerializer\NewOrderSerializer
                 options:
                     commitAsync: true
                     receiveTimeout: 10000
                     topic:
-                        name: 'order-status'
+                        name: 'new-orders'
                     kafka_conf:
                         enable.auto.offset.store: 'false'
                         group.id: 'group-delivery-order-status' # should be unique per consumer
@@ -18,12 +18,12 @@ framework:
                         auto.offset.reset: 'earliest'
             order_status_producer:
                 dsn: '%env(KAFKA_URL)%'
-                serializer: App\MessageSerializer\NewOrderSerializer
+                serializer: App\MessageSerializer\UpdateOrderStatusSerializer
                 options:
                     flushTimeout: 10000
                     flushRetries: 5
                     topic:
-                        name: 'new-orders'
+                        name: 'order-status'
                     kafka_conf:
                         security.protocol: 'plaintext'
 

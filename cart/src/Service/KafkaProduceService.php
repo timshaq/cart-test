@@ -6,6 +6,7 @@ use App\Entity\Constant;
 use App\Entity\Order;
 use App\Entity\OrderProduct;
 use App\Entity\User;
+use App\Message\Consume\UpdateOrderStatusMessage;
 use App\Message\Produce\NewOrder\NewOrderMessage;
 use App\Message\Produce\NewReport\NewReportMessage;
 use App\Message\Produce\UserSignUpMessage;
@@ -68,8 +69,8 @@ readonly class KafkaProduceService
         $messageData = [
             'type' => $order->getUser()->getNotificationType()->getValue(),
             'notificationType' => 'success_payment',
-            'orderNum' => 'ORD_' . $order->getId(),
-            'orderItems' => $messageOrderItems,
+            'orderNum' => UpdateOrderStatusMessage::ORDER_NUM_PREFIX . $order->getId(),
+            'orderItems' => $messageOrderItems->toArray(),
             'deliveryType' => $order->getDeliveryType(),
             'deliveryAddress' => $order->getDeliveryAddress()
         ];

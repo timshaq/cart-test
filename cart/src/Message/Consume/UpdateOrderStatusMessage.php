@@ -7,15 +7,16 @@ use App\Message\Message;
 
 final class UpdateOrderStatusMessage extends Message
 {
+    public const ORDER_NUM_PREFIX = 'ORD_';
     public function __construct(
-        private readonly int    $orderId,
+        private readonly string    $orderId,
         private readonly string $status,
     )
     {
         parent::__construct();
     }
 
-    public function getOrderId(): int
+    public function getOrderId(): string
     {
         return $this->orderId;
     }

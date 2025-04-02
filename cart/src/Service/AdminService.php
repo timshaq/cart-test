@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Order;
-use App\Repository\ConstantRepository;
+use App\Message\Consume\UpdateOrderStatusMessage;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -17,8 +17,9 @@ readonly class AdminService
     {
     }
 
-    public function setOrderStatus(int $orderId, string $status): Order
+    public function setOrderStatus(string $orderNum, string $status): Order
     {
+        $orderId = str_replace(UpdateOrderStatusMessage::ORDER_NUM_PREFIX, '' , $orderNum);
         $order = $this->orderRepository->find($orderId);
         if (!$order) {
             throw new BadRequestException('Order not found');
