@@ -3,7 +3,13 @@
 set -e  # Остановить скрипт при ошибке
 
 USER="www-data"
-CONTAINERS=("cart" "product-service") #todo: run by user (not by root) -u $USER
+CONTAINERS=(
+  "cart"
+  "delivery-service"
+  "notification-service"
+  "product-service"
+  "statistics-service"
+) #todo: run by user (not by root) -u $USER
 
 echo "$ENV"
 
