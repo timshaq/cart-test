@@ -1,7 +1,9 @@
 .idea
-cart-database/**/*
-!cart-database/**/*/.gitkeep
+database/cart/**/*
+database/cart-test/**/*
+database/delivery/**/*
+database/auth/**/*
 
-delivery-database/**/*
-!delivery-database/**/*/.gitkeep
+!database/**/*/.gitkeep
+
 .env

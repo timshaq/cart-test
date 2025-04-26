@@ -1,0 +1,35 @@
+framework:
+    messenger:
+        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+        # failure_transport: failed
+
+        transports:
+            # https://symfony.com/doc/current/messenger.html#transport-configuration
+            # async: '%env(MESSENGER_TRANSPORT_DSN)%'
+            # failed: 'doctrine://default?queue_name=failed'
+            # sync: 'sync://'
+            user_sign_up_producer:
+                dsn: '%env(KAFKA_URL)%'
+                serializer: App\MessageSerializer\UserSignUpSerializer
+                options:
+                    flushTimeout: 10000
+                    flushRetries: 5
+                    topic:
+                        name: 'users'
+                    kafka_conf:
+                        security.protocol: 'plaintext' #'sasl_ssl'
+#                        ssl.ca.location: '%kernel.project_dir%/config/kafka/ca.pem'
+#                        sasl.username: '%env(KAFKA_SASL_USERNAME)%'
+#                        sasl.password: '%env(KAFKA_SASL_PASSWORD)%'
+#                        sasl.mechanisms: 'SCRAM-SHA-256'
+
+        routing:
+            App\Message\Produce\UserSignUpMessage: user_sign_up_producer
+
+# when@test:
+#    framework:
+#        messenger:
+#            transports:
+#                # replace with your transport name here (e.g., my_transport: 'in-memory://')
+#                # For more Messenger testing tools, see https://github.com/zenstruck/messenger-test
+#                async: 'in-memory://'

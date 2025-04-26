@@ -1,6 +1,44 @@
 version: '3.8'
 
 services:
+  gateway-service:
+    container_name: gateway-service
+    build:
+      context: .
+      dockerfile: .docker/services/gateway/gateway.dockerfile
+    ports:
+      - 8400:8410
+    volumes:
+      - ./.docker/services/gateway/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./.docker/services/gateway/var/log:/var/log/nginx
+    restart: unless-stopped
+
+  auth-service:
+    container_name: auth-service
+    build:
+      context: .
+      dockerfile: .docker/common/symfony.dockerfile
+    volumes:
+      - ./services/auth/:/var/www/app
+      - ./.docker/common/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./.docker/services/auth/var/log:/var/log/nginx
+    restart: unless-stopped
+    env_file:
+      - ./.env
+
+  auth-database:
+    image: mysql:8.0
+    container_name: cart-database
+    ports:
+      - 3305:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${AUTH_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${AUTH_MYSQL_DATABASE}
+      MYSQL_USER: ${AUTH_MYSQL_USER}
+      MYSQL_PASSWORD: ${AUTH_MYSQL_PASSWORD}
+    volumes:
+      - ./database/auth/data:/var/lib/mysql
+
   cart:
     container_name: cart
     build:
@@ -10,7 +48,7 @@ services:
       - 8410:8410
     volumes:
       - ./cart/:/var/www/app
-      - ./.docker/cart/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./.docker/common/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./.docker/cart/var/log:/var/log/nginx
     restart: unless-stopped
     env_file:
@@ -22,12 +60,12 @@ services:
     ports:
       - 3306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${CART_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${CART_MYSQL_DATABASE}
+      MYSQL_USER: ${CART_MYSQL_USER}
+      MYSQL_PASSWORD: ${CART_MYSQL_PASSWORD}
     volumes:
-      - ./cart-database/data:/var/lib/mysql
+      - ./database/cart/data:/var/lib/mysql
 
   cart-database-test:
     image: mysql:8.0
@@ -35,12 +73,12 @@ services:
     ports:
       - 3307:3306
     environment:
-      MYSQL_ROOT_PASSWORD: ${TEST_MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${TEST_MYSQL_DATABASE}
-      MYSQL_USER: ${TEST_MYSQL_USER}
-      MYSQL_PASSWORD: ${TEST_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${CART_TEST_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${CART_TEST_MYSQL_DATABASE}
+      MYSQL_USER: ${CART_TEST_MYSQL_USER}
+      MYSQL_PASSWORD: ${CART_TEST_MYSQL_PASSWORD}
     volumes:
-      - ./cart-database/test-data:/var/lib/mysql
+      - ./database/cart-test/data:/var/lib/mysql
 
   delivery-database:
     image: mysql:8.0
@@ -53,7 +91,7 @@ services:
       MYSQL_USER: ${DELIVERY_MYSQL_USER}
       MYSQL_PASSWORD: ${DELIVERY_MYSQL_PASSWORD}
     volumes:
-      - ./delivery-database/data:/var/lib/mysql
+      - ./database/delivery/data:/var/lib/mysql
 
   delivery-service:
     container_name: delivery-service
@@ -64,7 +102,7 @@ services:
       - 8411:8410
     volumes:
       - ./services/delivery/:/var/www/app
-      - ./.docker/cart/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./.docker/common/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./.docker/services/delivery/var/log:/var/log/nginx
     restart: unless-stopped
     env_file:
@@ -79,7 +117,7 @@ services:
       - 8412:8410
     volumes:
       - ./services/notification/:/var/www/app
-      - ./.docker/cart/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./.docker/common/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./.docker/services/notification/var/log:/var/log/nginx
     restart: unless-stopped
     env_file:
@@ -94,7 +132,7 @@ services:
       - 8413:8410
     volumes:
       - ./services/product/:/var/www/app
-      - ./.docker/cart/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./.docker/common/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./.docker/services/product/var/log:/var/log/nginx
     restart: unless-stopped
     env_file:
@@ -109,7 +147,7 @@ services:
       - 8414:8410
     volumes:
       - ./services/statistics/:/var/www/app
-      - ./.docker/cart/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./.docker/common/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./.docker/services/statistics/var/log:/var/log/nginx
     restart: unless-stopped
     env_file:
