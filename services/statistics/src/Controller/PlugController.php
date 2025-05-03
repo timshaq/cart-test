@@ -9,13 +9,13 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class PlugController extends AbstractController
 {
-    #[Route('/plug/report', name: 'plug', methods: ['GET'])]
+    #[Route('/plug/report', name: 'plug-report', methods: ['GET'])]
     public function sendReportRequest(HttpClientInterface $client): Response
     {
         try {
             $response = $client->request(
                 'GET',
-                'http://cart:8410/api/integration/report/orders/completed',
+                'http://cart-service:8410/api/integration/report/orders/completed',
                 [
                     'headers' => ['api-key' => $this->getParameter('api.key.cart')]
                 ]

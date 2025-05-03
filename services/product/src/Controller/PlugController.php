@@ -16,7 +16,7 @@ class PlugController extends AbstractController
      */
     #[Route(
         '/plug/product/generate/{count}',
-        name: 'plug',
+        name: 'generate-product',
         requirements: ['count' => '\d+'],
         methods: ['GET']
     )]

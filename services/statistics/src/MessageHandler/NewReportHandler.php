@@ -23,7 +23,7 @@ final readonly class NewReportHandler
             try {
                 $response = $this->client->request(
                     'GET',
-                    'http://cart:8410/api/integration/report/' . $message->getReportId(),
+                    'http://cart-service:8410/api/integration/report/' . $message->getReportId(),
                     [
                         'headers' => ['api-key' => $this->parameterBag->get('api.key.cart')]
                     ]
