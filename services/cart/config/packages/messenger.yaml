@@ -29,7 +29,7 @@ framework:
                     flushTimeout: 10000
                     flushRetries: 5
                     topic:
-                        name: 'new-orders'
+                        name: 'orders'
                     kafka_conf:
                         security.protocol: 'plaintext'
             new_report_producer:
@@ -39,7 +39,7 @@ framework:
                     flushTimeout: 10000
                     flushRetries: 5
                     topic:
-                        name: 'new-reports'
+                        name: 'reports'
                     kafka_conf:
                         security.protocol: 'plaintext'
             product_consumer:

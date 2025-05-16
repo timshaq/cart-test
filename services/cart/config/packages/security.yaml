@@ -19,16 +19,7 @@ security:
             provider: api_key_user_provider
             custom_authenticators:
                 - App\Security\ApiKey\ApiKeyAuthenticator
-        login:
-            pattern: ^/sign-in
-            stateless: true
-            provider: app_user_provider
-            json_login:
-                check_path: /sign-in
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
         main:
-#            pattern: ^/
             stateless: true
             jwt: ~
             provider: app_user_provider
@@ -43,11 +34,9 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/integration, roles: ROLE_INTEGRATION }
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/products, roles: PUBLIC_ACCESS }
-        - { path: ^/sign-up, roles: PUBLIC_ACCESS }
-        - { path: ^/sign-in, roles: PUBLIC_ACCESS }
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/admin, roles: ROLE_ADMIN }
+        - { path: ^/api/products, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 #when@test:
 #    security:
